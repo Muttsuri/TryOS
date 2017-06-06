@@ -8,16 +8,16 @@ objs = loader.o kernel.o
 
 #Make object file for the c++ file, compiled with g++, output for output file ($@) and input from input file ($<)
 %.o: %.cpp
-	g++ $(CPPPARAMS) -o $@ -c $<
+		g++ $(CPPPARAMS) -o $@ -c $<
 
 #Make object file from the assemby file, "compiled" with as, output for output file ($@) and input from input file ($<)
 %.o: %.asm 
-	as $(ASMPARAMS) -o $@  $<
+		as $(ASMPARAMS) -o $@  $<
 
 #links the objects $< (input) = linker.ld,  $@ target
 trykernel.bin: linker.ld $(objs)
-	ld $(LDPARAMS) -T $< -o $@ $(objs)
+		ld $(LDPARAMS) -T $< -o $@ $(objs)
 
 #coppy kernel to /boot/ (to test)
 install: trykernel.bin
-	sudo cp $< /boot/trykernel.bin
+		sudo cp $< /boot/trykernel.bin
