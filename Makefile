@@ -1,8 +1,17 @@
-CPPPARAMS = -m32 #Compile C++ for 32 bit
+#Compile C++ for 32 bit (-m32)
+#Don't use OS's memory management (-fno-use-cxa-atexit)
+#No libC (-nostdlib)
+#
+#No Runtime Type Identification (-fno-rtti)
+#No exeption handeling (-fno-exeptions)
+#Prevents the naming of the kernel starting with undsersocre, if this was not we would have to call _kernelMain in loader.asm instead of kernelMain
+CPPPARAMS = -m32 -fno-use-cxa-atexit -nostdlib -fno-builtin -fno-rtti -fno-exceptions -fno-leading-underscore 
 
-ASMPARAMS = --32 #Compile Assembly for 32bit
+#Compile Assembly for 32bit
+ASMPARAMS = --32 
 
-LDPARAMS = -melf_i386 #Target architecture
+#Target architecture
+LDPARAMS = -melf_i386 
 
 objs = loader.o kernel.o
 
