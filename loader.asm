@@ -14,7 +14,7 @@
 .global loader # program entery pointer
 
 loader:
-    mov $kernel_stack, %esp # atribute the value of %esp to the pointer of the kernelfucntion
+    mov $kernel_stack, %esp # atribute the value of %esp to the pointer of the kernel fucntion
                             # this kernel stack pointer should be far for the kernel so it does
                             # not ovveride the kernel
     
@@ -27,6 +27,6 @@ _stop:             # infinite loop in case kernel stops
     hlt
     jmp _stop
 
-.section .bss
+.section .bss # stack of the OS
 .space 2*1024*1024 # 2Mb empty padding
 kernel_stack:
