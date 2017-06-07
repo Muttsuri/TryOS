@@ -1,5 +1,4 @@
 #Ignore object files
 .o
-
 #Ignore binary files
 .bin
