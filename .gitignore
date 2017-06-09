@@ -1,8 +1,8 @@
 # Ignore object files
-.o 
+*.o 
 # Ignore binary files
-.bin
+*.bin
 #KDevelop Metadata
-.kdev4/
+*.kdev4/
 #KDevelop Project File
-.kdev4
+*.kdev4
