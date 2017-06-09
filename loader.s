@@ -1,13 +1,13 @@
-# Constant Declaration
+﻿# Constant Declaration
 
 .set MAGIC, 0x1BADB002 # Word MAGIC is replaced at compile time for the value 0x1BADB002 which is a "magic" number 
                        # For it is the number that the bootloader will be searching for to identify the kernel
                        # declared at the multiboot specification -> https://www.gnu.org/software/grub/manual/multiboot/multiboot.html#Header-magic-fields
 
-.set ALIGN, 1<<0   			# Align the loaded modules in relation with the page bounderies
+.set ALIGN, 1<<0   			# Align the loaded modules in relation with the page boundaries
 .set MEMINFO, 1<<1 			# provides memory map
 .set FLAGS, ALIGN | MEMINFO   		# Flags for the bootloader 
-.set CHECKSUM, -(MAGIC + FLAGS) 	# Prove that we are multiboot
+.set CHECKSUM, -(MAGIC + FLAGS) 	# Prove that this program is the kernel
 
 # Constant Declaration End.
 
@@ -23,10 +23,10 @@
 
 
 # Stack Space Alocation
-# NOTE: Stack pointer register -> esp, seting up the pointer is up to the OS (This linker is part of the OS)
+# NOTE: Stack pointer register -> %esp, seting up the pointer is up to the OS (This linker is part of the OS)
 
 .section .bss 		# stack of the OS for the stack location and pointer is not defined by the bootloader
-    .align 16 		# stack on x86 (32bit) must bue 16-byte aligned acording to the System V ABI standart (System V is a unix system), falure to comply with this standart could lead to unexpected behaviour
+    .align 16 		# stack on x86 (32bit) must bue 16-byte aligned acording to the System V ABI standart (System V is a unix system), falure to comply with this standard could lead to unexpected behaviour
     stack_bottom: 	# start stack symbol the bottom of the stack
     .skip 16384 	# space of 16KiB
     stack_top:		# end stack symbol the top of the stack
