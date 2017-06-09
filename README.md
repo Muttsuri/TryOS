@@ -14,3 +14,13 @@ O projeto segue varios tutoriais:
 
 Paginas da [OSDev.org](http://wiki.osdev.org/Main_Page) (Uma wiki com informação pertenete ao desenvolviento de sistemas opeativos) [Por agora]:
 * [Bare Bones OS](http://wiki.osdev.org/Bare_Bones)
+
+### Software Usado:
+* Kdevelop - Editor de Codigo
+* g++ - Compilador de C++
+* as - Compilador de GNU/Assembly
+* ld - GNU Linker
+* git/github - Gestor de Codigo Fontes
+* Virtual Box - Maquina Virtual Para Testar o Sistema Operativos
+* grub-legacy - Gerador e configurador do Bootloader GRUB
+* xorriso - Gerador de ficheiros ISO
