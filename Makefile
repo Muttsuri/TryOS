@@ -1,32 +1,51 @@
-#Compile C++ for 32 bit (-m32)
-#Don't use OS's memory management (-fno-use-cxa-atexit)
-#No libC (-nostdlib)
+# Compile for 32bit
+# Don't use OS's memory management (-fno-use-cxa-atexit)
+# No libC (-nostdlib)
 #
-#No Runtime Type Identification (-fno-rtti)
-#No exeption handeling (-fno-exeptions)
-#Prevents the naming of the kernel starting with undsersocre, if this was not we would have to call _kernelMain in loader.asm instead of kernelMain
+# No Runtime Type Identification (-fno-rtti)
+# No exeption handeling (-fno-exeptions)
+# Prevents the naming of the kernel starting with undsersocre, if this was not we would have to call _kernelMain in loader.asm instead of kernelMain
 CPPPARAMS = -m32 -fno-use-cxa-atexit -nostdlib -fno-builtin -fno-rtti -fno-exceptions -fno-leading-underscore 
 
-#Compile Assembly for 32bit
-ASMPARAMS = --32 
+# Compile Assembly for 32bit
+ASMPARAMS = --32
 
-#Target architecture
-LDPARAMS = -melf_i386 
+# Target architecture
+LDPARAMS = -melf_i386
 
 objs = loader.o kernel.o
 
-#Make object file for the c++ file, compiled with g++, output for output file ($@) and input from input file ($<)
+# Make object file for the c++ file, compiled with g++, output for output file ($@) and input from input file ($<)
 %.o: %.cpp
-		g++ $(CPPPARAMS) -o $@ -c $<
+	g++ $(CPPPARAMS) -o $@ -c $<
 
-#Make object file from the assemby file, "compiled" with as, output for output file ($@) and input from input file ($<)
-%.o: %.asm 
-		as $(ASMPARAMS) -o $@  $<
+# Make object file from the assemby file, "compiled" with as, output for output file ($@) and input from input file ($<)
+%.o: %.s
+	as $(ASMPARAMS) -o $@  $<
 
-#links the objects $< (input) = linker.ld,  $@ target
+# links the objects $< (input) = linker.ld,  $@ target
 trykernel.bin: linker.ld $(objs)
-		ld $(LDPARAMS) -T $< -o $@ $(objs)
+	ld $(LDPARAMS) -T $< -o $@ $(objs)
 
-#coppy kernel to /boot/ (to test)
-install: trykernel.bin
-		sudo cp $< /boot/trykernel.bin
+#OBSOLETE
+#copy kernel to /boot/ (to test)
+#install: trykernel.bin
+#	sudo cp $< /boot/trykernel.bin
+#OBSOLETE
+
+# Create a bootable ISO image.
+TryOS.iso: trykernel.bin
+	mkdir iso
+	mkdir iso/boot
+	mkdir iso/boot/grub
+	cp $< iso/boot
+	echo 'set timeout=0' > iso/boot/grub/grub.cfg
+	echo 'set default=0' >> iso/boot/grub/grub.cfg
+	echo '' >> iso/boot/grub/grub.cfg
+	echo 'menuentry "TryOS" }' >> iso/boot/grub/grub.cfg
+	echo '	multiboot /boot/trykernel.bin ' >> iso/boot/grub/grub.cfg
+	echo '	boot' >> iso/boot/grub/grub.cfg
+	echo '}' >> iso/boot/grub/grub.cfg
+	grub-mkrescue --output=$@ iso
+	rm -fr iso *.bin *.o
+
