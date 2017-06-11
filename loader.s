@@ -1,11 +1,11 @@
 # Constant Declaration
-.set MAGIC, 0x1BADB002 /* Word MAGIC is replaced at compile time for the value 0x1BADB002 which is a "magic" number 
+.set MAGIC, 0x1BADB002 /* Word MAGIC is replaced at compile time for the value 0x1BADB002 which is a "magic" number
                          For it is the number that the bootloader will be searching for to identify the kernel
                          declared at the multiboot specification -> https://www.gnu.org/software/grub/manual/multiboot/multiboot.html#Header-magic-fields */
 
 .set ALIGN, 1<<0   			# Align the loaded modules in relation with the page boundaries
 .set MEMINFO, 1<<1 			# provides memory map
-.set FLAGS, ALIGN | MEMINFO   		# Flags for the bootloader 
+.set FLAGS, ALIGN | MEMINFO   		# Flags for the bootloader
 .set CHECKSUM, -(MAGIC + FLAGS) 	# Prove that this program is the kernel
 
 # Constant Declaration End.
@@ -17,7 +17,7 @@
     .long MAGIC
     .long FLAGS
     .long CHECKSUM
-    
+
 # Multiboot header End.
 
 
@@ -50,26 +50,26 @@ loader:
 				  not ovveride the kernel
 				  //However by the contrary of the Stack Space Alocation the stack in x86 grows downwards hence why pove the pointer of the top of the stack to the %esp register (stack pointer register)
 				  Langauges like C cannot operate without a stack/*
-  
- 
+
+
 # processor state area
 /*This is the place where processor state is initialised before the high-level kernel is entered
-  # Things like. 
+  # Things like.
     # Paging
     # Floating Point Instructions
     # Global Constructors (C++)
     # Exeptions
   # It is also where the GDT (Global Descriptor Table) should be loaded [low level memory management]*/
-  
+
    call CallConstructors #Global constructor call
-   
+
 # processor state area end
 
 
     push %eax 		# multiboot RAM size data locaiton pointer pass as argument to kernel. The data is created by the bootloader
     push %ebx 		# magic number that the bootloader copies to %ebx, pass the magic number as an argument for the kernel   
     call kernelMain 	# calls the kernel itself
-    
+
 
 _stop:		#if somehow the kernel stops
     cli		# Disable Interups
@@ -79,5 +79,6 @@ _stop:		#if somehow the kernel stops
 
 .size loader, . - loader # Set size of loader symbol to: current location ( . ) minus it's start
 			 # supousedly usefull for debuging or implementing call tracing.
-			 
+
 # Code Section End
+

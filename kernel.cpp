@@ -38,7 +38,7 @@ extern "C" void CallConstructors()
 //extern "C" -> avoid C++ alternative naming conventions, use C naming conventions
 extern "C" void kernelMain(void* multiboot_structure, unsigned int magicnumber) //void pointer to accept the multiboot data passed from loader, also accepts the magic number
 {
-    printf("I have booted");
-    
-    while (1); //prevent kernel from stoping
+	printf("I have booted");
+
+	while (1); //prevent kernel from stoping
 }
