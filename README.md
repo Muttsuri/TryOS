@@ -25,3 +25,6 @@ Paginas da [OSDev.org](http://wiki.osdev.org/Main_Page) (Uma wiki com informa√ß√
 * Virtual Box - Maquina Virtual Para Testar o Sistema Operativos
 * grub-pc - Gerador e configurador do Bootloader GRUB
 * xorriso - Gerador de ficheiros ISO
+
+### Achivements
+* Boots on VM
