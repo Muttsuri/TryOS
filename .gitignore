@@ -1,4 +1,4 @@
-# Ignore object files
+﻿# Ignore object files
 *.o 
 # Ignore binary files
 *.bin
@@ -6,3 +6,5 @@
 *.kdev4/
 #KDevelop Project File
 *.kdev4
+#ISO File
+*.iso
