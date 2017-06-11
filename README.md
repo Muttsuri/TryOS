@@ -20,7 +20,8 @@ Paginas da [OSDev.org](http://wiki.osdev.org/Main_Page) (Uma wiki com informaç�
 * g++ - Compilador de C++
 * as - Compilador de GNU/Assembly
 * ld - GNU Linker
+* GnuMake - Gerador de executaveis e ISO (Ferramenta de Automatização)
 * git/github - Gestor de Codigo Fontes
 * Virtual Box - Maquina Virtual Para Testar o Sistema Operativos
-* grub-legacy - Gerador e configurador do Bootloader GRUB
+* grub-pc - Gerador e configurador do Bootloader GRUB
 * xorriso - Gerador de ficheiros ISO
