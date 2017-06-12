@@ -27,11 +27,10 @@ objs = loader.o kernel.o
 trykernel.bin: linker.ld $(objs)
 	ld $(LDPARAMS) -T $< -o $@ $(objs)
 
-#OBSOLETE
-#copy kernel to /boot/ (to test)
-#install: trykernel.bin
-#	sudo cp $< /boot/trykernel.bin
-#OBSOLETE
+#Exists for the purpouse of coding within a Vm an testing with the VM copy kernel to /boot/ (to test)
+install: trykernel.bin
+	sudo cp $< /boot/trykernel.bin
+#
 
 # Create a bootable ISO image.
 TryOS.iso: trykernel.bin
