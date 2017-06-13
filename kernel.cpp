@@ -1,6 +1,8 @@
+#include "types.h"
+
 void printf(char* str) //we have to code a printf becuase as we are building an os we have no linker to add the library stdio.h which has the printf function.
 {
-    unsigned short* VideoMemory = (unsigned short*)0xb8000; //video memory starts at 0xb8000
+    static u16_t* VideoMemory = (u16_t*)0xb8000; //video memory starts at 0xb8000
     for(int i = 0; str[i] !='\0'; i++)
     {
         VideoMemory[i] = (VideoMemory[i] & 0xFF00) | str[i]; /*This copies to video memory the value each character in the string
@@ -36,9 +38,9 @@ extern "C" void CallConstructors()
 
 
 //extern "C" -> avoid C++ alternative naming conventions, use C naming conventions
-extern "C" void kernelMain(void* multiboot_structure, unsigned int magicnumber) //void pointer to accept the multiboot data passed from loader, also accepts the magic number
+extern "C" void kernelMain(const void* multiboot_structure, u32_t magicnumber) //void pointer to accept the multiboot data passed from loader, also accepts the magic number
 {
-	printf("I have booted");
+	printf("I have booted. WRYYYYYYYYY !!!!");
 
 	while (1); //prevent kernel from stoping
 }
