@@ -1,5 +1,6 @@
-#ifndef __TYPES_H
-#define __TYPES_H
+/*Prevents multiple insatnsiations of this code for each time it is called*/
+#ifndef __TYPES_H //if the code hasn't been instansiated
+#define __TYPES_H //instansiate it
 
 /*
  This is used to make sure that all the data transfers are bite perfect due to the fact that:
@@ -15,19 +16,19 @@
  and the lower being the last half, this dicotomy is reverced for little endian [This has copious ammounts of assumsion])
  */
 
-typedef signed char s8_t; //8 bit signed integer (byte)
-typedef unsigned char u8_t; //8 bit unsigned integer (byte)
+typedef signed char s8; //8 bit signed integer (1 byte)
+typedef unsigned char u8; //8 bit unsigned integer (1 byte)
 
-typedef signed short s16_t; //16 bit integer
-typedef unsigned short u16_t; //16 bii unsigned integer
+typedef signed short s16; //16 bit integer (2 byte)
+typedef unsigned short u16; //16 bii unsigned integer (2 byte)
 
-typedef signed int s32_t; //32 bit integer
-typedef unsigned int u32_t; //32 bit unsigned integer
+typedef signed int s32; //32 bit integer (4bytes)
+typedef unsigned int u32; //32 bit unsigned integer (4bytes)
 
-typedef signed long s64_t; //64 bit integer
-typedef unsigned long u64_t; //64bit unsigned integer
+typedef signed long s64; //64 bit integer (8bytes)
+typedef unsigned long u64; //64bit unsigned integer (8bytes)
 
 /*
  Syntax gotten from Linux Kernel Development page 385
  */
-#endif
+#endif //else skip the instansiation of the code (this allows correct compilation)
