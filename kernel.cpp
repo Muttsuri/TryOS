@@ -1,8 +1,9 @@
-#include "types.h"
+#include "types.h" //search for the file is extended from the standard comiler include bath to them plus the current source directory (if no path to another folder is pointed)
+#include "gdt.h"
 
 void printf(char* str) //we have to code a printf becuase as we are building an os we have no linker to add the library stdio.h which has the printf function.
 {
-    static u16_t* VideoMemory = (u16_t*)0xb8000; //video memory starts at 0xb8000
+    static u16* VideoMemory = (u16*)0xb8000; //video memory starts at 0xb8000
     for(int i = 0; str[i] !='\0'; i++)
     {
         VideoMemory[i] = (VideoMemory[i] & 0xFF00) | str[i]; /*This copies to video memory the value each character in the string
@@ -38,9 +39,13 @@ extern "C" void CallConstructors()
 
 
 //extern "C" -> avoid C++ alternative naming conventions, use C naming conventions
-extern "C" void kernelMain(const void* multiboot_structure, u32_t magicnumber) //void pointer to accept the multiboot data passed from loader, also accepts the magic number
+extern "C" void kernelMain(const void* multiboot_structure, u32 magicnumber) //void pointer to accept the multiboot data passed from loader, also accepts the magic number
 {
 	printf("I have booted. WRYYYYYYYYY !!!!");
 
+	GlobalDescriptorTable gdt; //Instanciate Global Descripter Table
+	
+	
+	
 	while (1); //prevent kernel from stoping
 }
