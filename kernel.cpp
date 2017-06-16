@@ -4,13 +4,41 @@
 void printf(const char* str) //we have to code a printf becuase as we are building an os we have no linker to add the library stdio.h which has the printf function.
 {
     static u16* VideoMemory = (u16*)0xb8000; //video memory starts at 0xb8000
+    
+    static u8 x=0, y=0; //initiate x and u cursor variables NOTE: Screen is by defautl 80 characters long and 25
+    
     for(int i = 0; str[i] !='\0'; i++)
     {
-        VideoMemory[i] = (VideoMemory[i] & 0xFF00) | str[i]; /*This copies to video memory the value each character in the string
-                                                               but it also copies the high byte of the video memory so that the characters remain white
-                                                               this is the default of the video memory
-                                                               after copying the high byte it combines it with the character to make the white charctet
-                                                               high byte defines the colour of the character and the second defines the value to be presented.*/
+	switch(str[i])
+	{
+	  case '\n': //line break
+	    y++;
+	    x=0;
+	    
+	  default:
+	    VideoMemory[80*y+x] = (VideoMemory[80*y+x] & 0xFF00) | str[i]; /*This copies to video memory the value each character in the string
+								  but it also copies the high byte of the video memory so that the characters remain white
+								  this is the default of the video memory
+								  after copying the high byte it combines it with the character to make the white charctet
+								  high byte defines the colour of the character and the second defines the value to be presented.*/
+	    x++;
+	}
+	
+	if (x>=80) //if cursor reaches the right edge of the screen move the cursor 1 line down
+	{
+	  y++;
+	  x=0;
+	}
+	if (y >= 25) //if cursor reaches the bottom of the screen, clear screen
+	{
+	  for(y=0; y<25; y++)
+	     for(x=0; x<80; x++)
+	       VideoMemory[80*y+x] = (VideoMemory[80*y+x] & 0xFF00) | ' ';
+	     
+	   x=0;
+	   y=0;
+	}
+	  
     }
 }
 
@@ -43,7 +71,7 @@ extern "C" void kernelMain(const void* multiboot_structure, u32 magicnumber) //v
 {
 	GlobalDescriptorTable gdt; //Instanciate Global Descripter Table
 	
-	printf("I have booted. WRYYYYYYYYY !!!!");
+	printf("I have booted.\n WRYYYYYYYYY !!!!");
 
 	
 	while (1); //prevent kernel from stoping
