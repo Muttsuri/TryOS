@@ -24,17 +24,17 @@ class GlobalDescriptorTable
 	u32 Limit(); //Size of the Memory Block
     } __attribute__((packed));
     
-    SegmentDescriptor NullSegmentSelector; //Defines memory speace as empty
-    SegmentDescriptor UnusedSegmentSelector; //Defines mempru space as unused
-    SegmentDescriptor CodeSegmentSelector; //Defines memory space as code
-    SegmentDescriptor DataSegmentSelector; //Defines memory space as datas
+    SegmentDescriptor nullSegmentSelector; //Defines memory speace as empty
+    SegmentDescriptor unusedSegmentSelector; //Defines mempru space as unused
+    SegmentDescriptor codeSegmentSelector; //Defines memory space as code
+    SegmentDescriptor dataSegmentSelector; //Defines memory space as datas
     
     public:
       GlobalDescriptorTable(); //Constructor
       ~GlobalDescriptorTable(); //Destructor
       
-      //u16 CodeSegmentSelector(); 
-      //u16 DataSegmentSelector();
+      u16 CodeSegmentSelector(); 
+      u16 DataSegmentSelector();
 };
 
 #endif //else skip the instansiation of the code (this allows correct compilation)

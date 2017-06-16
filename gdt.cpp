@@ -4,10 +4,10 @@
 /*This constructs the Global Descriptor Table*/
 
 GlobalDescriptorTable::GlobalDescriptorTable() //Construct a segment
-: NullSegmentSelector(0,0,0),
-  UnusedSegmentSelector(0,0,0),
-  CodeSegmentSelector(0,64*1024*1024,0x9A),
-  DataSegmentSelector(0,64*1024*1024,0x92)
+: nullSegmentSelector(0,0,0),
+  unusedSegmentSelector(0,0,0),
+  codeSegmentSelector(0,64*1024*1024,0x9A),
+  dataSegmentSelector(0,64*1024*1024,0x92)
   {
     /*Tell the processor to use the created table
       NOTE: The CPU expects 6 bytes in a row of information
@@ -17,24 +17,27 @@ GlobalDescriptorTable::GlobalDescriptorTable() //Construct a segment
     i[0] = sizeof(GlobalDescriptorTable) << 16; //Size of the Table (<< 16, shitft to the left [high bites big endian])
     i[1] = (u32)this; //adress of the table
     
-    /*Assebly to tell the cpu to use the table*/
+    /*Assembly to tell the cpu to use the table*/
     asm volatile("lgdt (%0)": :"p"(((u8 *)i)+2)); //Load Global Descriptor Table (lgdt)
   } 
   
-/*GlobalDescriptorTable::~GlobalDescriptorTable()
+GlobalDescriptorTable::~GlobalDescriptorTable()
 {
-  /*Does nothing for now
-    it should unload the GDT } */
+	/*Does nothing for now
+	 *it should unload the GDT*/
+}
 
 
-u16 GlobalDescriptorTable::SegmentDescriptor() //offset of the Data Segment 
+u16 GlobalDescriptorTable::DataSegmentSelector()
 {
-  return (u8 *)&DataSegmentSelector - (u8 *)this; //return: get address of the Data Segment Selector (&dataSegmentSelector) and subtracting the segment of the table
+	return (u8 *)&dataSegmentSelector - (u8 *)this; //return: get address of the Data Segment Selector (&dataSegmentSelector) and subtracting the segment of the table
 }
-u16 GlobalDescriptorTable::SegmentDescriptor() //offset of the Code Segment 
+
+u16 GlobalDescriptorTable::CodeSegmentSelector()
 {
-  return (u8 *)&CodeSegmentSelector - (u8 *)this; //return: get address of the Code Segment Selector (&dataSegmentSelector) and subtracting the segment of the table
+	return (u8 *)&codeSegmentSelector - (u8 *)this; //return: get address of the Code Segment Selector (&dataSegmentSelector) and subtracting the segment of the table
 }
+
 
 
 
@@ -107,4 +110,6 @@ u32 GlobalDescriptorTable::SegmentDescriptor::Limit()
   //only necessart if target[6] was set to 0xC0
   if ((target[6] & 0xC0) == 0xC0)
   result = (result <<12) | 0xFFF;
+  
+  return result;
 }
