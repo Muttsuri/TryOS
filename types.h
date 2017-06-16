@@ -22,13 +22,14 @@ typedef unsigned char u8; //8 bit unsigned integer (1 byte)
 typedef signed short s16; //16 bit integer (2 byte)
 typedef unsigned short u16; //16 bii unsigned integer (2 byte)
 
-typedef signed int s32; //32 bit integer (4bytes)
-typedef unsigned int u32; //32 bit unsigned integer (4bytes)
+typedef signed long s32; //32 bit integer (4bytes)
+typedef unsigned long u32; //32 bit unsigned integer (4bytes)
 
 typedef signed long long int s64; //64 bit integer (8bytes)
 typedef unsigned long long int u64; //64bit unsigned integer (8bytes)
 
 /*
  Syntax gotten from Linux Kernel Development page 385
+ Data types size acording with: http://www.learncpp.com/cpp-tutorial/23-variable-sizes-and-the-sizeof-operator/
  */
 #endif //else skip the instansiation of the code (this allows correct compilation)
