@@ -25,8 +25,8 @@ typedef unsigned short u16; //16 bii unsigned integer (2 byte)
 typedef signed int s32; //32 bit integer (4bytes)
 typedef unsigned int u32; //32 bit unsigned integer (4bytes)
 
-typedef signed long s64; //64 bit integer (8bytes)
-typedef unsigned long u64; //64bit unsigned integer (8bytes)
+typedef signed long long int s64; //64 bit integer (8bytes)
+typedef unsigned long long int u64; //64bit unsigned integer (8bytes)
 
 /*
  Syntax gotten from Linux Kernel Development page 385
