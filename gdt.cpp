@@ -18,7 +18,7 @@ GlobalDescriptorTable::GlobalDescriptorTable() //Construct a segment
     i[1] = (u32)this; //adress of the table
     
     /*Assembly to tell the cpu to use the table*/
-    asm volatile("lgdt (%0)": :"p"(((u8 *)i)+2)); //Load Global Descriptor Table (lgdt)
+   __asm__ volatile("lgdt (%0)": :"p"(((u8 *)i)+2)); //Load Global Descriptor Table (lgdt)
   } 
   
 GlobalDescriptorTable::~GlobalDescriptorTable()
