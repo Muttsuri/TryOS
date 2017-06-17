@@ -1,5 +1,5 @@
-#ifndef __PORT.H 
-#define __PORT.H 
+#ifndef __PORT_H 
+#define __PORT_H 
 
 #include "types.h"
 
@@ -7,7 +7,7 @@
 class Port //Define things equal to all ports
 {
 protected: //protected so it can't be instanciated (it's a purely virtual class)
-  u16 portunuber; //port number is always 16bit
+  u16 portnumber; //port number is always 16bit
   Port(u16 portnumber); //Constructor
   // these should be virtual but they are not becuse the kernel does not have memory manangement yet
   ~Port(); //Destructor
