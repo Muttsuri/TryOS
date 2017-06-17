@@ -1,6 +1,17 @@
 #include "types.h" //search for the file is extended from the standard comiler include bath to them plus the current source directory (if no path to another folder is pointed)
 #include "gdt.h"
-
+void clear()
+{
+    static u16* VideoMemory = (u16*)0xb8000;
+    static u8 x=0, y=0;
+    
+    for(y=0; y<25; y++)
+	     for(x=0; x<80; x++)
+	       VideoMemory[80*y+x] = (VideoMemory[80*y+x] & 0xFF00) | ' ';
+	     
+	   x=0;
+	   y=0;
+}
 void printf(const char* str) //we have to code a printf becuase as we are building an os we have no linker to add the library stdio.h which has the printf function.
 {
     static u16* VideoMemory = (u16*)0xb8000; //video memory starts at 0xb8000
@@ -13,7 +24,7 @@ void printf(const char* str) //we have to code a printf becuase as we are buildi
 	{
 	  case '\n': //line break
 	    y++;
-	    x=0;
+	    x=-1;
 	    
 	  default:
 	    VideoMemory[80*y+x] = (VideoMemory[80*y+x] & 0xFF00) | str[i]; /*This copies to video memory the value each character in the string
@@ -29,7 +40,7 @@ void printf(const char* str) //we have to code a printf becuase as we are buildi
 	  y++;
 	  x=0;
 	}
-	if (y >= 25) //if cursor reaches the bottom of the screen, clear screen
+	if (y > 25) //if cursor reaches the bottom of the screen, clear screen
 	{
 	  for(y=0; y<25; y++)
 	     for(x=0; x<80; x++)
@@ -71,8 +82,36 @@ extern "C" void kernelMain(const void* multiboot_structure, u32 magicnumber) //v
 {
 	GlobalDescriptorTable gdt; //Instanciate Global Descripter Table
 	
-	printf("I have booted.\n WRYYYYYYYYY !!!!");
-
+	clear();
+	
+	printf("Kono TryOS Kenrel-da has booted\n");
+	printf("WRYYYYYYYYYYYYYYYYYYYYYYYYY!!!!!\n");
+	printf("MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA\n");
+	printf("MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA\n");
+	printf("MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA\n");
+	printf("MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA\n");
+	printf("MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA\n");
+	printf("MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA\n");
+	printf("MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA\n");
+	printf("MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA\n");
+	printf("MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA\n");
+	printf("MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA\n");
+	printf("MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA\n");
+	printf("MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA\n");
+	printf("MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA\n");
+	printf("MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA\n");
+	printf("MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA\n");
+	printf("MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA\n");
+	printf("MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA\n");
+	printf("MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA\n");
+	printf("MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA\n");
+	printf("MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA\n");
+	printf("MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA\n");
+	printf("MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA\n");
+	printf("MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA\n");
+	
+	
+	
 	
 	while (1); //prevent kernel from stoping
 }
