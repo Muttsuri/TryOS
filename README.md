@@ -28,3 +28,4 @@ Paginas da [OSDev.org](http://wiki.osdev.org/Main_Page) (Uma wiki com informa√ß√
 
 ### Achivements
 * Boots on VM
+* Boots on Hardwere
