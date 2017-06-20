@@ -23,6 +23,11 @@ void InterruptManager::SetInterruptDescriptorTableEntry(
 }
 
 InterruptManager::InterruptManager(GlobalDescriptorTable gdt)
+/*To Instanciate the InterruptManager we need to intiate the ports to contact with the PIC and effectively have Interrupts*/
+  :picMasterCommand(0x20),
+   picMasterData(0x21),
+   picSlaveCommand(0xA0),
+   picSlaveData(0xA1)
 {
 	u16 CodeSegment = gdt->CodeSegmentSelector();
 	const u8 IDT_INTERRUPT_GATE = 0xE;
@@ -36,6 +41,19 @@ InterruptManager::InterruptManager(GlobalDescriptorTable gdt)
 	SetInterruptDescriptorTableEntry(0x20, CodeSegment, &HandleInterruptResquest0x00, 0, IDT_INTERRUPT_GATE); //Timer
 	SetInterruptDescriptorTableEntry(0x21, CodeSegment, &HandleInterruptResquest0x01, 0, IDT_INTERRUPT_GATE); //Keyboard
 
+	/*Before telling the cpu to use the IDT we comunicate with the PIC ports*/
+	picMasterCommand.Write(0x11);
+	picSlaveCommand.Write(0x11);
+	
+	picMasterData.Write(0x20); //If any interrupt is caught add 0x20 to the value of the interrupt
+	picSlaveData.Write(0x28);  //If any interrupt is caught add 0x28 to the value of the interrupt
+	/*This is requited because by default the pics will return the value of 1 when they get an interrupt
+	  which is a value used by the cpu internely for exeption, and as such that would cause errors*/
+	
+	
+	
+	
+	
 	/*Tell the cpu to use the IDT*/
 	InterruptDescriptorTablePointer idt;
 	idt.size = 256 * sizeof(GateDescriptor) -1;

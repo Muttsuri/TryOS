@@ -36,6 +36,17 @@ class InterruptManager
         u8 DescriptorPrivilegeLevel,
         u8 DescriptorType
     ); 
+    
+    /*Ports to comunicate with the Programable Interface Controler
+      NOTE: There are 4 Types of PIC's but they are refered in bulk
+	    Threre is a Master and Slave Pic, both have Command and Data Types*/
+    Port8BitSlow picMasterCommand;
+    Port8BitSlow picMasterData;
+    Port8BitSlow picSlaveCommand;
+    Port8BitSlow picSlaveData;
+    /*This is the device that passes the interrupt to the cpu and in x86 it incorporated into the Motherboard's SouthBridge*/
+    
+    
     public:
         /*Constructor and Destructor of the Interupt Manager Class*/
         InterruptManager(GlobalDescriptorTable gdt); //get pointer to GDT
