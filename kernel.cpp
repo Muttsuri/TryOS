@@ -9,7 +9,8 @@ void clear()
     
     for(y=0; y<25; y++)
 	     for(x=0; x<80; x++)
-	       VideoMemory[80*y+x] = (VideoMemory[80*y+x] & 0xFF00) | ' ';
+	       VideoMemory[80*y+x] = (VideoMemory[80*y+x]) ;
+	       //VideoMemory[80*y+x] = (VideoMemory[80*y+x] & 0xFF00) | ' ';
 	     
 	   x=0;
 	   y=0;
@@ -30,10 +31,10 @@ void printf(const char* str) //we have to code a printf becuase as we are buildi
 	    
 	  default:
 	    VideoMemory[80*y+x] = (VideoMemory[80*y+x] & 0xFF00) | str[i]; /*This copies to video memory the value each character in the string
-								  but it also copies the high byte of the video memory so that the characters remain white
-								  this is the default of the video memory
-								  after copying the high byte it combines it with the character to make the white charctet
-								  high byte defines the colour of the character and the second defines the value to be presented.*/
+									      but it also copies the high byte of the video memory so that the characters remain white
+									      this is the default of the video memory
+									      after copying the high byte it combines it with the character to make the white charctet
+									      high byte defines the colour of the character and the second defines the value to be presented.*/
 	    x++;
 	}
 	
