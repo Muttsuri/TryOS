@@ -30,6 +30,7 @@ trykernel.bin: linker.ld $(objs)
 #Exists for the purpouse of coding within a Vm an testing with the VM copy kernel to /boot/ (to test)
 install: trykernel.bin
 	sudo cp $< /boot/trykernel.bin
+	rm -fr *.bin *.o
 #
 
 # Create a bootable ISO image.
