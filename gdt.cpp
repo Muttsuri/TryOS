@@ -4,6 +4,7 @@
 /*This constructs the Global Descriptor Table*/
 
 GlobalDescriptorTable::GlobalDescriptorTable() //Construct a segment
+/*Initiate the Segment Selectors*/
 : nullSegmentSelector(0,0,0),
   unusedSegmentSelector(0,0,0),
   codeSegmentSelector(0,64*1024*1024,0x9A),

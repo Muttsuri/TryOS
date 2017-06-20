@@ -7,6 +7,8 @@
 # .global _ZN16InterruptHandler22IgnoreInterruptRequestEv -> declaed and called bellow, uncesessary ?
 
 
+
+/*Handler code*/
 .macro HandleException num
 		/*He said it should be 19 but he worte 16*/
 .global _ZN16InterruptManager16HandleInterruptRequest\num\()Ev # define to the outside the jump lable
@@ -29,6 +31,9 @@ _ZN16InterruptManager26HandleInterruptRequest\num\()Ev: # code of the fucntion
 	movb $\num + IRQ_BASE, (interruptnumber)
 	jmp int_bottom
 .endm
+/*Handler code*/
+
+
 
 /*Implementation of Interrupt Handlers declared @ interrupts.h*/
 HandleInterruptRequest 0x00 # Timer
