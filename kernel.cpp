@@ -1,5 +1,7 @@
 #include "types.h" //search for the file is extended from the standard comiler include bath to them plus the current source directory (if no path to another folder is pointed)
 #include "gdt.h"
+#include "interrupts.h"
+
 void clear()
 {
     static u16* VideoMemory = (u16*)0xb8000;
@@ -81,6 +83,9 @@ extern "C" void CallConstructors()
 extern "C" void kernelMain(const void* multiboot_structure, u32 magicnumber) //void pointer to accept the multiboot data passed from loader, also accepts the magic number
 {
 	GlobalDescriptorTable gdt; //Instanciate Global Descripter Table
+	InterruptManager interrupts(&gdt); //Instanciate hadwere
+
+	interrupts.Activate(); //Actiave Interupt Handling
 	
 	clear();
 	
