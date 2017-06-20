@@ -1,5 +1,11 @@
 #include "port.h"
 
+/*
+  Ports is the name given to specific adresses of the x86 (32bit) IO Bus (identified by a range represented by the portnumber value)
+  Information Source: http://wiki.osdev.org/I/O_Ports
+  Source Code From Video
+  Unfortunatly the video does not go into detail about what each of the code parts do.
+ */
 
 //instanciate a port
 Port::Port(u16 portnumber)
@@ -8,7 +14,6 @@ Port::Port(u16 portnumber)
 }
 
 Port::~Port() {} //Instanciate Destructor
-
 
 
 
@@ -45,7 +50,7 @@ Port8BitSlow::~Port8BitSlow() {}
 
 void Port8BitSlow::Write(u8 data)
 {
- __asm__ volatile("outb %0, %1\njmp 1f\n1: jmp 1f\n1:" : : "a" (data), "Nd" (portnumber));
+ __asm__ volatile("outb %0, %1\njmp 1f\n1: jmp 1f\n1:" : : "a" (data), "Nd" (portnumber)); //\njmp 1f\n1: jmp 1f\n1:-> just a few jumps to slow down sligly the writing of data to the port
 }
     /*Slow end*/
 

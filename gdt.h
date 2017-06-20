@@ -22,7 +22,8 @@ class GlobalDescriptorTable
 	SegmentDescriptor(u32 base,u32 limit, u8 type);
 	u32 Base(); //Pointer to Memeory Block
 	u32 Limit(); //Size of the Memory Block
-    } __attribute__((packed)); //for byte perfect hardwere comunication
+    } __attribute__((packed)); //for byte perfect comuntication
+
     
     SegmentDescriptor nullSegmentSelector; //Defines memory speace as empty
     SegmentDescriptor unusedSegmentSelector; //Defines mempru space as unused

@@ -2,7 +2,11 @@
 #define __PORT_H 
 
 #include "types.h"
-
+/*
+  Declaration of the types of ports and fucntions that the ports must have.
+  Source Code From Video
+  Unfortunatly the video does not go into detail about what each of the code parts do.
+  */
 
 class Port //Define things equal to all ports
 {

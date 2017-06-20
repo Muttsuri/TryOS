@@ -54,6 +54,5 @@ void InterruptManager::Activate()
 u32 InterruptManager::HandleInterrupt(u32 interruptNumber, u32 esp)
 {
 	printf("Interrupt"); //reason for foward of printf
-	return esp;
+	return esp; //for now only returns stack pointer
 }
-
