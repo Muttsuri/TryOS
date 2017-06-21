@@ -16,9 +16,9 @@ SECTIONS
     .data :
     {
         start_ctors = .;					/*allow initaisation of global variables, Pointer of where it starts (this is known to other .o files)*/
-        KEEP(*(.init_array ));				/*data constructors*/
+        KEEP(*(.init_array ));					/*data constructors*/
         KEEP(*(SORT_BY_INIT_PRIORITY( .init_array.*))); 	/*data constructors*/
-        end_ctors = .;					/*end seting of global variables, Pointer of where it ends (this is known to other .o files)*/
+        end_ctors = .;						/*end seting of global variables, Pointer of where it ends (this is known to other .o files)*/
 
         *(.data)
     }

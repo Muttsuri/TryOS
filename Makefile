@@ -5,7 +5,7 @@
 # No Runtime Type Identification (-fno-rtti)
 # No exeption handeling (-fno-exeptions)
 # Prevents the naming of the kernel starting with undsersocre, if this was not we would have to call _kernelMain in loader.asm instead of kernelMain
-CPPPARAMS = -m32 -fno-use-cxa-atexit -nostdlib -fno-builtin -fno-rtti -fno-exceptions -fno-leading-underscore 
+CPPPARAMS = -m32 -fno-use-cxa-atexit -nostdlib -fno-builtin -fno-rtti -fno-exceptions -fno-leading-underscore -O0
 
 # Compile Assembly for 32bit
 ASMPARAMS = --32
@@ -13,7 +13,7 @@ ASMPARAMS = --32
 # Target architecture
 LDPARAMS = -melf_i386
 
-objs = loader.o kernel.o gdt.o port.o interrupts.o
+objs = loader.o gdt.o port.o interruptstubs.o interrupts.o  kernel.o 
 
 # Make object file for the c++ file, compiled with g++, output for output file ($@) and input from input file ($<)
 %.o: %.cpp
@@ -30,6 +30,7 @@ trykernel.bin: linker.ld $(objs)
 #Exists for the purpouse of coding within a Vm an testing with the VM copy kernel to /boot/ (to test)
 install: trykernel.bin
 	sudo cp $< /boot/trykernel.bin
+	sudo nano /boot/grub/grub.cfg
 	rm -fr *.bin *.o
 #
 

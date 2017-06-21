@@ -6,7 +6,7 @@ void printf(const char* str);
 InterruptManager::GateDescriptor InterruptManager::InterruptDescriptorTable[256];
 
 void InterruptManager::SetInterruptDescriptorTableEntry(
-	    u8 interruptNumber,
+	u8 interruptNumber,
         u16 codeSegmentSelectorOffset,
         void (*handler)(), 
         u8 DescriptorPrivilegeLevel,
@@ -18,9 +18,12 @@ void InterruptManager::SetInterruptDescriptorTableEntry(
 	InterruptDescriptorTable[interruptNumber].HandlerAddressLowBits = ((u32)handler) & 0xFFFF;
 	InterruptDescriptorTable[interruptNumber].HandlerAddressHighBits = (((u32)handler) >> 16) & 0xFFFF;
 	InterruptDescriptorTable[interruptNumber].gdt_codeSegmentSelector = codeSegmentSelectorOffset;
-	InterruptDescriptorTable[interruptNumber].access = IDT_DESC_PRESENT | DescriptorType | ((DescriptorPrivilegeLevel&3) <<5) ;
+	InterruptDescriptorTable[interruptNumber].access = IDT_DESC_PRESENT | DescriptorType | ((DescriptorPrivilegeLevel & 3) <<5) ;
 	InterruptDescriptorTable[interruptNumber].reserved = 0;
 }
+
+
+
 
 InterruptManager::InterruptManager(GlobalDescriptorTable* gdt)
 /*To Instanciate the InterruptManager we need to intiate the ports to contact with the PIC and effectively have Interrupts*/
@@ -33,9 +36,10 @@ InterruptManager::InterruptManager(GlobalDescriptorTable* gdt)
 	const u8 IDT_INTERRUPT_GATE = 0xE;
 
 	/*Set All non-Explicit entries to be ignored so that there won't be a global fault and a system crash*/
-	for(u16 i=0; i<256;i++)
+	for(u8 i=0; i<256;i++)
 		SetInterruptDescriptorTableEntry(i, CodeSegment, &IgnoreInterruptRequest, 0/*Kernel Level*/, IDT_INTERRUPT_GATE);
 
+	
 	/*Explicit Enteries*/
 	// NOTE: 0x20 -> 0x00 and 0x21 -> 0x01, Becuase it increments by 0x20 on the HandleInterruptRequest	
 	SetInterruptDescriptorTableEntry(0x20, CodeSegment, &HandleInterruptResquest0x00, 0, IDT_INTERRUPT_GATE); //Timer
@@ -67,16 +71,18 @@ InterruptManager::InterruptManager(GlobalDescriptorTable* gdt)
 	__asm__ volatile ("lidt %0" : : "m" (idt)); //Use idt
 };
 
+
+
 InterruptManager::~InterruptManager() {};
+
 
 void InterruptManager::Activate()
 {
 	__asm__ ("sti"); //Start Interrupts
-}
-
+};
 
 u32 InterruptManager::HandleInterrupt(u32 interruptNumber, u32 esp)
 {
 	printf("Interrupt"); //reason for foward of printf
 	return esp; //for now only returns stack pointer
-}
+};

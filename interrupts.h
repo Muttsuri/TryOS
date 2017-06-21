@@ -2,9 +2,9 @@
 #ifndef __INTERUPTS_H
 #define __INTERUPTS_H
 
-#include "types.h"
-#include "port.h"
-#include "gdt.h"
+  #include "types.h"
+  #include "port.h"
+  #include "gdt.h"
 
 class InterruptManager
 {
@@ -46,6 +46,11 @@ class InterruptManager
     Port8BitSlow picSlaveData;
     /*This is the device that passes the interrupt to the cpu and in x86 it incorporated into the Motherboard's SouthBridge*/
     
+    static u32 HandleInterrupt(u32 interruptNumber, u32 esp/*Current Stack Pointer*/);
+
+    static void IgnoreInterruptRequest();
+    static void HandleInterruptResquest0x00(); //0x00 (Interrupt Timer)
+    static void HandleInterruptResquest0x01(); //0x01 (Keyboard)
     
     public:
         /*Constructor and Destructor of the Interupt Manager Class*/
@@ -53,12 +58,7 @@ class InterruptManager
         ~InterruptManager();
 
         void Activate();
-
-        static u32 HandleInterrupt(u32 interruptNumber, u32 esp/*Current Stack Pointer*/);
-
-        static void IgnoreInterruptRequest();
-        static void HandleInterruptResquest0x00(); //0x00 (Interrupt Timer)
-        static void HandleInterruptResquest0x01(); //0x01 (Keyboard)
+        
 };
 
 #endif
