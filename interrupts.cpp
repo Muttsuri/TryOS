@@ -7,7 +7,7 @@ InterruptManager::GateDescriptor InterruptManager::InterruptDescriptorTable[256]
 
 void InterruptManager::SetInterruptDescriptorTableEntry(
 	    u8 interruptNumber,
-        u16 gdt_codeSegmentSelector,
+        u16 codeSegmentSelectorOffset,
         void (*handler)(), 
         u8 DescriptorPrivilegeLevel,
         u8 DescriptorType
@@ -22,7 +22,7 @@ void InterruptManager::SetInterruptDescriptorTableEntry(
 	InterruptDescriptorTable[interruptNumber].reserved = 0;
 }
 
-InterruptManager::InterruptManager(GlobalDescriptorTable gdt)
+InterruptManager::InterruptManager(GlobalDescriptorTable* gdt)
 /*To Instanciate the InterruptManager we need to intiate the ports to contact with the PIC and effectively have Interrupts*/
   :picMasterCommand(0x20),
    picMasterData(0x21),
@@ -50,9 +50,15 @@ InterruptManager::InterruptManager(GlobalDescriptorTable gdt)
 	/*This is requited because by default the pics will return the value of 1 when they get an interrupt
 	  which is a value used by the cpu internely for exeption, and as such that would cause errors*/
 	
-	
-	
-	
+	picMasterData.Write(0x04); //Identify as Master
+	picSlaveData.Write(0x02);  //Identify as Slave
+
+	picMasterData.Write(0x01);
+	picSlaveData.Write(0x01);
+
+	picMasterData.Write(0x00);
+	picSlaveData.Write(0x00);
+	/*End of PIC Port Comunication*/
 	
 	/*Tell the cpu to use the IDT*/
 	InterruptDescriptorTablePointer idt;

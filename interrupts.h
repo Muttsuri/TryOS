@@ -49,7 +49,7 @@ class InterruptManager
     
     public:
         /*Constructor and Destructor of the Interupt Manager Class*/
-        InterruptManager(GlobalDescriptorTable gdt); //get pointer to GDT
+        InterruptManager(GlobalDescriptorTable* gdt); //get pointer to GDT
         ~InterruptManager();
 
         void Activate();
