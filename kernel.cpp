@@ -2,24 +2,10 @@
 #include "gdt.h"
 #include "interrupts.h"
 
-void clear()
-{
-    static u16* VideoMemory = (u16*)0xb8000;
-    static u8 x=0, y=0;
-    
-    for(y=0; y<25; y++)
-	     for(x=0; x<80; x++)
-	       VideoMemory[80*y+x] = (VideoMemory[80*y+x]) ;
-	       //VideoMemory[80*y+x] = (VideoMemory[80*y+x] & 0xFF00) | ' ';
-	     
-	   x=0;
-	   y=0;
-}
-void printf(const char* str) //we have to code a printf becuase as we are building an os we have no linker to add the library stdio.h which has the printf function.
-{
-    static u16* VideoMemory = (u16*)0xb8000; //video memory starts at 0xb8000
-    
-    static u8 x=0, y=0; //initiate x and u cursor variables NOTE: Screen is by defautl 80 characters long and 25
+void printf(const char* str)
+{  
+    static u16* VideoMemory = (u16*)0xb8000;//video memory starts at 0xb8000
+    static u8 x=0, y=1; //initiate x and u cursor variables NOTE: Screen is by defautl 80 characters long and 25
     
     for(int i = 0; str[i] !='\0'; i++)
     {
@@ -56,6 +42,19 @@ void printf(const char* str) //we have to code a printf becuase as we are buildi
     }
 }
 
+void clear()
+{
+    static u16* VideoMemory = (u16*)0xb8000;
+    static u8 x=0, y=0;
+    
+    for(y=0; y<25; y++)
+	     for(x=0; x<80; x++)
+	       VideoMemory[80*y+x] = (VideoMemory[80*y+x]) ;
+	       //VideoMemory[80*y+x] = (VideoMemory[80*y+x] & 0xFF00) | ' ';
+	     
+	   x=0;
+	   y=0;
+}
 
 /*
   Constructor for global objects
@@ -83,19 +82,19 @@ extern "C" void CallConstructors()
 //extern "C" -> avoid C++ alternative naming conventions, use C naming conventions
 extern "C" void kernelMain(const void* multiboot_structure, u32 magicnumber) //void pointer to accept the multiboot data passed from loader, also accepts the magic number
 {
+	
 	GlobalDescriptorTable gdt; //Instanciate Global Descripter Table
-	InterruptManager interrupts(&gdt); //Instanciate hadwere
+	InterruptManager interrupts(0x20, &gdt); //Instanciate Interrupts (This is causing errors)
 
 	interrupts.Activate(); //Actiave Interupt Handling
 	
-	// clear(); commented for INTERRUPT testing, it will be uncomented to test clear()
-	
+	//clear(); //commented for INTERRUPT testing, it will be uncomented to test clear()
+
 	printf("Kono TryOS Kenrel-da has booted\n");
 	printf("WRYYYYYYYYYYYYYYYYYYYYYYYYY!!!!!\n");
 	printf("MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA\n");
 	printf("MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA\n");
 	printf("MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA\n");
-	
 	
 	
 	
