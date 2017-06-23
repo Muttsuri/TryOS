@@ -2,30 +2,29 @@
 
 .section .text
 	/*_ZN16 = u16 || InteruptHandler (class) || 15 (id) || HandleInterrupt (function) || Ehm (has parameters) */
-.extern _ZN16InterruptManager15HandleInterruptEmm
+.extern _ZN16InterruptManager15HandleInterruptEhj
 
 # .global _ZN16InterruptHandler22IgnoreInterruptRequestEv -> declaed and called bellow, uncesessary ?
-.global _ZN16InterruptManager22IgnoreInterruptRequestEv
 
-/*
-/*Handler code/
+
+/*Handler code*/
 .macro HandleException num
-		/*He said it should be 19 but he worte 16/
+		/*He said it should be 19 but he worte 16*/ 
 	_ZN16InterruptManager19HandleException\num\()Ev
 .global _ZN16InterruptManager19HandleInterruptRequest\num\()Ev # define to the outside the jump lable
-	# _ZN16InterruptManager22handleInterruptRequestEv -> Alternative Auto defined by C++
-	/*_ZN16 = u16 | InterruptManager (class) | 16 (id) | HandleInterruptRequest (function) | \num\ sends number as paramenter | ()Ev (no parameters) *
+	/*_ZN16 = u16 | InterruptManager (class) | 16 (id) | HandleInterruptRequest (function) | \num\ sends number as paramenter | ()Ev (no parameters) */
 
 _ZN16InterruptManager19HandleInterruptRequest\num\()Ev: # code of the fucntion
 	movb $\num, (interruptnumber)
 	jmp int_bottom
 .endm
-*/
+
+
+
 
 /*For exeptions*/
 .macro HandleInterruptRequest num
 .global _ZN16InterruptManager27HandleInterruptRequest\num\()Ev # define to the outside the jump lable
-	# _ZN16InterruptManager22handleInterruptRequestEv -> Alternative Auto defined by C++
 	/*_ZN16 = u16 | InterruptManager (class) | 25 (id) | HandleInterruptRequest (function) | \num\ sends number as paramenter | ()Ev (no parameters) */
 	
 _ZN16InterruptManager27HandleInterruptRequest\num\()Ev: # code of the fucntion
@@ -34,7 +33,8 @@ _ZN16InterruptManager27HandleInterruptRequest\num\()Ev: # code of the fucntion
 .endm
 /*Handler code*/
 
-
+HandleException 0x00
+HandleException 0x01
 
 /*Implementation of Interrupt Handlers declared @ interrupts.h*/
 HandleInterruptRequest 0x00 # Timer
@@ -55,11 +55,13 @@ int_bottom: # interrupt code
 	/*Registers Stored*/
 
 
-push %esp	
+push %esp
 push (interruptnumber)
 call _ZN16InterruptManager15HandleInterruptEmm # call function
+add %esp, 6
+mov %eax, %esp
 # addl $5, %esp -> this would clean the stack pointer, but as the fucntion returns the stack pointer it self there is no point in doing this
-movl %eax, %esp # Instead we do this
+#movl %eax, %esp # Instead we do this
 
 
 	/*Return/Load registers from stack*/	
@@ -67,11 +69,11 @@ movl %eax, %esp # Instead we do this
 	popl %fs
 	popl %es	
 	popl %ds
-	
 	popa	
 	/*Registers Loded*/
 
 /*If the interrupt is to be ignored it will skip the handeling of the interupt*/
+.global _ZN16InterruptManager22IgnoreInterruptRequestEv
 _ZN16InterruptManager22IgnoreInterruptRequestEv:
 
 iret # return CPU to normal operation -> done with handeling the interrupt

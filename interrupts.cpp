@@ -1,9 +1,10 @@
 #include "interrupts.h"
 
-/*Foward defenition of printf*/
-void printf(const char* str);
+void printf(char* str);
 
-InterruptManager::GateDescriptor InterruptManager::InterruptDescriptorTable[256];
+InterruptManager::GateDescriptor InterruptManager::InterruptDescriptorTablec[256];
+
+//InterruptManager* InterruptManager::ActiveInterruptManager = 0;
 
 void InterruptManager::SetInterruptDescriptorTableEntry(
 	u8 interruptNumber,
@@ -24,8 +25,7 @@ void InterruptManager::SetInterruptDescriptorTableEntry(
 
 
 
-
-InterruptManager::InterruptManager(GlobalDescriptorTable* gdt)
+InterruptManager::InterruptManager(u16 hwinterruptOffset, GlobalDescriptorTable* gdt)
 /*To Instanciate the InterruptManager we need to intiate the ports to contact with the PIC and effectively have Interrupts*/
   :picMasterCommand(0x20),
    picMasterData(0x21),
@@ -34,7 +34,8 @@ InterruptManager::InterruptManager(GlobalDescriptorTable* gdt)
 {
 	u16 CodeSegment = gdt->CodeSegmentSelector();
 	const u8 IDT_INTERRUPT_GATE = 0xE;
-
+	InterruptManager::IgnoreInterruptRequest();
+	
 	/*Set All non-Explicit entries to be ignored so that there won't be a global fault and a system crash*/
 	for(u8 i=0; i<256;i++)
 		SetInterruptDescriptorTableEntry(i, CodeSegment, &IgnoreInterruptRequest, 0/*Kernel Level*/, IDT_INTERRUPT_GATE);
@@ -42,17 +43,24 @@ InterruptManager::InterruptManager(GlobalDescriptorTable* gdt)
 	
 	/*Explicit Enteries*/
 	// NOTE: 0x20 -> 0x00 and 0x21 -> 0x01, Becuase it increments by 0x20 on the HandleInterruptRequest	
-	SetInterruptDescriptorTableEntry(0x20, CodeSegment, &HandleInterruptResquest0x00, 0, IDT_INTERRUPT_GATE); //Timer
-	SetInterruptDescriptorTableEntry(0x21, CodeSegment, &HandleInterruptResquest0x01, 0, IDT_INTERRUPT_GATE); //Keyboard
+	SetInterruptDescriptorTableEntry(0x00, CodeSegment, &HandleException0x00, 0, IDT_INTERRUPT_GATE); //Timer
+	SetInterruptDescriptorTableEntry(0x01, CodeSegment, &HandleException0x01, 0, IDT_INTERRUPT_GATE); //Keyboard
+	
+	SetInterruptDescriptorTableEntry(hwinterruptOffset + 0x00, CodeSegment, &HandleInterruptResquest0x00, 0, IDT_INTERRUPT_GATE); //Timer
+	SetInterruptDescriptorTableEntry(hwinterruptOffset + 0x01, CodeSegment, &HandleInterruptResquest0x01, 0, IDT_INTERRUPT_GATE); //Keyboard
+	
 
 	/*Before telling the cpu to use the IDT we comunicate with the PIC ports*/
 	picMasterCommand.Write(0x11);
 	picSlaveCommand.Write(0x11);
 	
-	picMasterData.Write(0x20); //If any interrupt is caught add 0x20 to the value of the interrupt
-	picSlaveData.Write(0x28);  //If any interrupt is caught add 0x28 to the value of the interrupt
-	/*This is requited because by default the pics will return the value of 1 when they get an interrupt
-	  which is a value used by the cpu internely for exeption, and as such that would cause errors*/
+	//remap
+	picMasterData.Write(hwinterruptOffset);
+	picSlaveData.Write(hwinterruptOffset+8);
+// 	picMasterData.Write(0x20); //If any interrupt is caught add 0x20 to the value of the interrupt
+// 	picSlaveData.Write(0x28);  //If any interrupt is caught add 0x28 to the value of the interrupt
+// 	/*This is requited because by default the pics will return the value of 1 when they get an interrupt
+// 	  which is a value used by the cpu internely for exeption, and as such that would cause errors*/
 	
 	picMasterData.Write(0x04); //Identify as Master
 	picSlaveData.Write(0x02);  //Identify as Slave
@@ -69,20 +77,40 @@ InterruptManager::InterruptManager(GlobalDescriptorTable* gdt)
 	idt.size = 256 * sizeof(GateDescriptor) -1;
 	idt.base = (u32)InterruptDescriptorTable;
 	__asm__ volatile ("lidt %0" : : "m" (idt)); //Use idt
-};
+}
 
 
+InterruptManager::~InterruptManager() 
+{
+    Deactivate();
+}
 
-InterruptManager::~InterruptManager() {};
-
+u16 InterruptManager::HardwareInterruptOffset()
+{
+  return hwinterruptOffset;
+}
 
 void InterruptManager::Activate()
 {
+// 	if(ActiveInterruptManager != 0)
+// 	   ActiveInterruptManager->Deactivate();
+// 	ActiveInterruptManager = this;
 	__asm__ ("sti"); //Start Interrupts
-};
+}
 
-u32 InterruptManager::HandleInterrupt(u32 interruptNumber, u32 esp)
+void InterruptManager::Deactivate()
 {
-	printf("Interrupt"); //reason for foward of printf
+  //ActiveInterruptManager = 0;
+  //__asm__("cli"); //Clear Interrupt
+}
+
+u32 InterruptManager::HandleInterrupt(u8 interruptNumber, u32 esp)
+{	
+// 	if(ActiveInterruptManager != 0)
+// 	{
+// 	  return ActiveInterruptManager->DoHandleInterrupt(interruptNumber, esp);
+// 	}
+	char* foo = "INTERRUPT 0x00";
+	printf(foo);
 	return esp; //for now only returns stack pointer
-};
+}

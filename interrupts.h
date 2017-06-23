@@ -1,6 +1,6 @@
 
-#ifndef __INTERUPTS_H
-#define __INTERUPTS_H
+#ifndef __INTERRUPTMANAGER_H
+#define __INTERRUPTMANAGER_H
 
   #include "types.h"
   #include "port.h"
@@ -9,6 +9,8 @@
 class InterruptManager
 {
     protected:
+      //static InterruptManager* ActiveInterruptManager;
+      
         struct GateDescriptor
         {
 	    /*Address of the handler is split*/
@@ -20,44 +22,55 @@ class InterruptManager
 
         } __attribute__((packed)); //for byte perfect comuntication;
     
-    static GateDescriptor InterruptDescriptorTable[256]; //array of 256 entries
+	static GateDescriptor InterruptDescriptorTable[256]; //array of 256 entries
 
-    struct InterruptDescriptorTablePointer
-    {
-        u16 size; //Size of the entry
-        u32 base; //Adress of the entry
-    } __attribute__((packed));
+	struct InterruptDescriptorTablePointer
+	{
+	    u16 size; //Size of the entry
+	    u32 base; //Adress of the entry
+	} __attribute__((packed));
 
+	u16 hwinterruptOffset;
+	
+	static void SetInterruptDescriptorTableEntry(
+	  u8 interruptNumber,
+	  u16 gdt_codeSegmentSelector,
+	  void (*handler)(), //pointer to the handler
+	  u8 DescriptorPrivilegeLevel,
+	  u8 DescriptorType
+	); 
+	
+    	static u32 HandleInterrupt(u8 interruptNumber, u32 esp/*Current Stack Pointer*/);
+	//u32 DoHandleInterrupt(u32 interruptNumber, u32 esp/*Current Stack Pointer*/);
 
-    static void SetInterruptDescriptorTableEntry(
-        u8 interruptNumber,
-        u16 gdt_codeSegmentSelector,
-        void (*handler)(), //pointer to the handler
-        u8 DescriptorPrivilegeLevel,
-        u8 DescriptorType
-    ); 
+	static void IgnoreInterruptRequest();
+	
+	static void HandleInterruptResquest0x00(); //0x00 (Interrupt Timer)
+	static void HandleInterruptResquest0x01(); //0x01 (Keyboard)
+	
+	static void HandleException0x00();
+	static void HandleException0x01();
+	
     
-    /*Ports to comunicate with the Programable Interface Controler
-      NOTE: There are 4 Types of PIC's but they are refered in bulk
-	    Threre is a Master and Slave Pic, both have Command and Data Types*/
-    Port8BitSlow picMasterCommand;
-    Port8BitSlow picMasterData;
-    Port8BitSlow picSlaveCommand;
-    Port8BitSlow picSlaveData;
-    /*This is the device that passes the interrupt to the cpu and in x86 it incorporated into the Motherboard's SouthBridge*/
-    
-    static u32 HandleInterrupt(u32 interruptNumber, u32 esp/*Current Stack Pointer*/);
+	/*Ports to comunicate with the Programable Interface Controler
+	  NOTE: There are 4 Types of PIC's but they are refered in bulk
+		Threre is a Master and Slave Pic, both have Command and Data Types*/
+	Port8BitSlow picMasterCommand;
+	Port8BitSlow picMasterData;
+	Port8BitSlow picSlaveCommand;
+	Port8BitSlow picSlaveData;
+	/*This is the device that passes the interrupt to the cpu and in x86 it incorporated into the Motherboard's SouthBridge*/
+	
 
-    static void IgnoreInterruptRequest();
-    static void HandleInterruptResquest0x00(); //0x00 (Interrupt Timer)
-    static void HandleInterruptResquest0x01(); //0x01 (Keyboard)
-    
     public:
         /*Constructor and Destructor of the Interupt Manager Class*/
-        InterruptManager(GlobalDescriptorTable* gdt); //get pointer to GDT
+        InterruptManager(u16 hwinterruptOffset,GlobalDescriptorTable* gdt); //get pointer to GDT
         ~InterruptManager();
-
+	
+	u16 HardwareInterruptOffset();
+	
         void Activate();
+	void Deactivate();
         
 };
 

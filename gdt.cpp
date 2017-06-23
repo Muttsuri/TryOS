@@ -6,15 +6,14 @@
 GlobalDescriptorTable::GlobalDescriptorTable() //Construct a segment
 /*Initiate the Segment Selectors*/
 : nullSegmentSelector(0,0,0),
-  unusedSegmentSelector(0,0,0),
-  codeSegmentSelector(0,64*1024*1024,0x9A),
-  dataSegmentSelector(0,64*1024*1024,0x92)
+    unusedSegmentSelector(0,0,0),
+    codeSegmentSelector(0,64*1024*1024,0x9A),
+    dataSegmentSelector(0,64*1024*1024,0x92)
   {
     /*Tell the processor to use the created table
-      NOTE: The CPU expects 6 bytes in a row of information
-      */
+      NOTE: The CPU expects 6 bytes in a row of information*/
     
-    u32 i[2]; //8bytes (I think it's 4 by types.h)
+    u64 i[2]; //8bytes (I think it's 4 by types.h)
     i[0] = sizeof(GlobalDescriptorTable) << 16; //Size of the Table (<< 16, shitft to the left [high bites big endian])
     i[1] = (u32)this; //adress of the table
     
