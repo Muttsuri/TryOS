@@ -4,7 +4,7 @@ OUTPUT_ARCH(i386:i386)		/*32bit output*/
 
 SECTIONS
 {
-    . =0x0100000; /*defines the output pointer to 0x100000*/
+    . =0x0100000; /*defines the output pointer to 0x100000 aka" .  " = = 0x0100000*/
 
     .text : /*code of the program goes here*/
     {
