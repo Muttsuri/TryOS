@@ -39,7 +39,7 @@
 # Code Section
 # NOTE: There is no point in return from the function as there will be no bootloader to return to
 
-.section .text
+.section .text # main program section
 .extern kernelMain 		# tell assembler that there will be a function named kernelMain (assmebler just assumes kernel is there with this)
 .extern CallConstructors 	# Tell assembler that there is a function named CallConstructors
 .global loader 			# program entery point

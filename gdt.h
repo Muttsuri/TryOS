@@ -17,7 +17,7 @@ class GlobalDescriptorTable
 	u8 base_hi;
 	u8 type;
 	u8 limit_hi;
-	u8 vase_vhi;
+	u8 base_vhi;
       public:
 	SegmentDescriptor(u32 base,u32 limit, u8 type);
 	u32 Base(); //Pointer to Memeory Block
