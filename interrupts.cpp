@@ -1,17 +1,16 @@
 #include "interrupts.h"
 
-void printf(char* str);
 
-InterruptManager::GateDescriptor InterruptManager::InterruptDescriptorTablec[256];
+InterruptManager::GateDescriptor InterruptManager::InterruptDescriptorTable[256];
 
-//InterruptManager* InterruptManager::ActiveInterruptManager = 0;
+//InterruptManager* InterruptManager::ActiveInterruptManager = 0; 
 
 void InterruptManager::SetInterruptDescriptorTableEntry(
 	u8 interruptNumber,
         u16 codeSegmentSelectorOffset,
         void (*handler)(), 
         u8 DescriptorPrivilegeLevel,
-        u8 DescriptorType
+        u8 DescriptorType 
 ) 
 {
 	const u8 IDT_DESC_PRESENT = 0x80;
@@ -19,7 +18,7 @@ void InterruptManager::SetInterruptDescriptorTableEntry(
 	InterruptDescriptorTable[interruptNumber].HandlerAddressLowBits = ((u32)handler) & 0xFFFF;
 	InterruptDescriptorTable[interruptNumber].HandlerAddressHighBits = (((u32)handler) >> 16) & 0xFFFF;
 	InterruptDescriptorTable[interruptNumber].gdt_codeSegmentSelector = codeSegmentSelectorOffset;
-	InterruptDescriptorTable[interruptNumber].access = IDT_DESC_PRESENT | DescriptorType | ((DescriptorPrivilegeLevel & 3) <<5) ;
+	InterruptDescriptorTable[interruptNumber].access = IDT_DESC_PRESENT | ((DescriptorPrivilegeLevel & 3) <<5) | DescriptorType ;
 	InterruptDescriptorTable[interruptNumber].reserved = 0;
 }
 
@@ -31,13 +30,14 @@ InterruptManager::InterruptManager(u16 hwinterruptOffset, GlobalDescriptorTable*
    picMasterData(0x21),
    picSlaveCommand(0xA0),
    picSlaveData(0xA1)
-{
+{	
+	hwinterruptOffset = this->HardwareInterruptOffset();
 	u16 CodeSegment = gdt->CodeSegmentSelector();
 	const u8 IDT_INTERRUPT_GATE = 0xE;
 	InterruptManager::IgnoreInterruptRequest();
 	
 	/*Set All non-Explicit entries to be ignored so that there won't be a global fault and a system crash*/
-	for(u8 i=0; i<256;i++)
+	for(u16 i=0; i>256;i++)
 		SetInterruptDescriptorTableEntry(i, CodeSegment, &IgnoreInterruptRequest, 0/*Kernel Level*/, IDT_INTERRUPT_GATE);
 
 	
@@ -45,7 +45,7 @@ InterruptManager::InterruptManager(u16 hwinterruptOffset, GlobalDescriptorTable*
 	// NOTE: 0x20 -> 0x00 and 0x21 -> 0x01, Becuase it increments by 0x20 on the HandleInterruptRequest	
 	SetInterruptDescriptorTableEntry(0x00, CodeSegment, &HandleException0x00, 0, IDT_INTERRUPT_GATE); //Timer
 	SetInterruptDescriptorTableEntry(0x01, CodeSegment, &HandleException0x01, 0, IDT_INTERRUPT_GATE); //Keyboard
-	
+
 	SetInterruptDescriptorTableEntry(hwinterruptOffset + 0x00, CodeSegment, &HandleInterruptResquest0x00, 0, IDT_INTERRUPT_GATE); //Timer
 	SetInterruptDescriptorTableEntry(hwinterruptOffset + 0x01, CodeSegment, &HandleInterruptResquest0x01, 0, IDT_INTERRUPT_GATE); //Keyboard
 	
@@ -110,7 +110,5 @@ u32 InterruptManager::HandleInterrupt(u8 interruptNumber, u32 esp)
 // 	{
 // 	  return ActiveInterruptManager->DoHandleInterrupt(interruptNumber, esp);
 // 	}
-	char* foo = "INTERRUPT 0x00";
-	printf(foo);
 	return esp; //for now only returns stack pointer
 }
