@@ -11,7 +11,7 @@ CPPPARAMS = -m32 -fno-use-cxa-atexit -nostdlib -fno-builtin -fno-rtti -fno-excep
 ASMPARAMS = --32
 
 # Target architecture
-LDPARAMS = -melf_i386
+LDPARAMS = -melf_i386 
 
 objs = loader.o gdt.o port.o interruptstubs.o interrupts.o kernel.o
 

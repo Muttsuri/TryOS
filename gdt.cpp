@@ -39,9 +39,6 @@ u16 GlobalDescriptorTable::CodeSegmentSelector()
 }
 
 
-
-
-
 /*Set the enteries*/
 GlobalDescriptorTable::SegmentDescriptor::SegmentDescriptor(u32 base, u32 limit, u8 type)
 {

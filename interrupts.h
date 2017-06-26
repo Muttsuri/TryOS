@@ -40,8 +40,6 @@ class InterruptManager
 	  u8 DescriptorType
 	); 
 	
-    	static u32 HandleInterrupt(u8 interruptNumber, u32 esp/*Current Stack Pointer*/);
-	//u32 DoHandleInterrupt(u32 interruptNumber, u32 esp/*Current Stack Pointer*/);
 
 	static void IgnoreInterruptRequest();
 	
@@ -50,8 +48,10 @@ class InterruptManager
 	
 	static void HandleException0x00();
 	static void HandleException0x01();
+
+    	static u32 HandleInterrupt(u8 interruptNumber, u32 esp/*Current Stack Pointer*/);
+	//u32 DoHandleInterrupt(u32 interruptNumber, u32 esp/*Current Stack Pointer*/);
 	
-    
 	/*Ports to comunicate with the Programable Interface Controler
 	  NOTE: There are 4 Types of PIC's but they are refered in bulk
 		Threre is a Master and Slave Pic, both have Command and Data Types*/
@@ -59,6 +59,7 @@ class InterruptManager
 	Port8BitSlow picMasterData;
 	Port8BitSlow picSlaveCommand;
 	Port8BitSlow picSlaveData;
+
 	/*This is the device that passes the interrupt to the cpu and in x86 it incorporated into the Motherboard's SouthBridge*/
 	
 
@@ -71,7 +72,6 @@ class InterruptManager
 	
         void Activate();
 	void Deactivate();
-        
 };
 
 #endif

@@ -5,7 +5,7 @@
 void printf(const char* str)
 {  
     static u16* VideoMemory = (u16*)0xb8000;//video memory starts at 0xb8000
-    static u8 x=0, y=1; //initiate x and u cursor variables NOTE: Screen is by defautl 80 characters long and 25
+    static u8 x=0, y=0; //initiate x and u cursor variables NOTE: Screen is by defautl 80 characters long and 25
     
     for(int i = 0; str[i] !='\0'; i++)
     {
@@ -37,8 +37,7 @@ void printf(const char* str)
 	     
 	   x=0;
 	   y=0;
-	}
-	  
+	}	  
     }
 }
 
@@ -49,8 +48,8 @@ void clear()
     
     for(y=0; y<25; y++)
 	     for(x=0; x<80; x++)
-	       VideoMemory[80*y+x] = (VideoMemory[80*y+x]) ;
-	       //VideoMemory[80*y+x] = (VideoMemory[80*y+x] & 0xFF00) | ' ';
+	       //VideoMemory[80*y+x] = (VideoMemory[80*y+x]) ;
+	       VideoMemory[80*y+x] = (VideoMemory[80*y+x] & 0xFF00) | ' ';
 	     
 	   x=0;
 	   y=0;
@@ -78,17 +77,14 @@ extern "C" void CallConstructors()
 }
 /*Constructor for global objects*/
 
-
 //extern "C" -> avoid C++ alternative naming conventions, use C naming conventions
 extern "C" void kernelMain(const void* multiboot_structure, u32 magicnumber) //void pointer to accept the multiboot data passed from loader, also accepts the magic number
 {
-	
-	GlobalDescriptorTable gdt; //Instanciate Global Descripter Table
-	InterruptManager interrupts(0x20, &gdt); //Instanciate Interrupts (This is causing errors)
+ 	GlobalDescriptorTable gdt; //Instanciate Global Descripter Table
+	InterruptManager interr(0x20, &gdt); //Instanciate Interrupts (This is causing errors)
+	interr.Activate(); //Actiave Interupt Handling
 
-	interrupts.Activate(); //Actiave Interupt Handling
-	
-	//clear(); //commented for INTERRUPT testing, it will be uncomented to test clear()
+	clear(); //commented for INTERRUPT testing, it will be uncomented to test clear()s
 
 	printf("Kono TryOS Kenrel-da has booted\n");
 	printf("WRYYYYYYYYYYYYYYYYYYYYYYYYY!!!!!\n");
