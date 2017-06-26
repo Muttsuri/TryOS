@@ -81,10 +81,12 @@ extern "C" void CallConstructors()
 extern "C" void kernelMain(const void* multiboot_structure, u32 magicnumber) //void pointer to accept the multiboot data passed from loader, also accepts the magic number
 {
  	GlobalDescriptorTable gdt; //Instanciate Global Descripter Table
+ 	printf("Testing Interrupt Declaration:\n");
 	InterruptManager interr(0x20, &gdt); //Instanciate Interrupts (This is causing errors)
+	printf("Testing Interrupt Activation:\n");
 	interr.Activate(); //Actiave Interupt Handling
 
-	clear(); //commented for INTERRUPT testing, it will be uncomented to test clear()s
+	//clear(); //commented for INTERRUPT testing, it will be uncomented to test clear()s
 
 	printf("Kono TryOS Kenrel-da has booted\n");
 	printf("WRYYYYYYYYYYYYYYYYYYYYYYYYY!!!!!\n");

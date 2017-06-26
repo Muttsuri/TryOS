@@ -7,14 +7,14 @@ GlobalDescriptorTable::GlobalDescriptorTable() //Construct a segment
 /*Initiate the Segment Selectors*/
 : nullSegmentSelector(0,0,0),
     unusedSegmentSelector(0,0,0),
-    codeSegmentSelector(0,64*1024*1024,0x9A),
-    dataSegmentSelector(0,64*1024*1024,0x92)
+    codeSegmentSelector(0,67108864/*64*1024*1024*/,0x9A), //Type 0x9A represents a code descriptor for the kernel
+    dataSegmentSelector(0,67108864/*64*1024*1024*/,0x92)  //
   {
     /*Tell the processor to use the created table
       NOTE: The CPU expects 6 bytes in a row of information*/
     
-    u64 i[2]; //8bytes (I think it's 4 by types.h)
-    i[0] = sizeof(GlobalDescriptorTable) << 16; //Size of the Table (<< 16, shitft to the left [high bites big endian])
+    u64 i[2]; //8bytes (I think it's u32 is 4 by types.h)
+    i[0] = sizeof(GlobalDescriptorTable) << 16; //Size of the Table (<< 16, shitft to the left [high bites of big endian])
     i[1] = (u32)this; //adress of the table
     
     /*Assembly to tell the cpu to use the table*/
@@ -43,14 +43,14 @@ u16 GlobalDescriptorTable::CodeSegmentSelector()
 GlobalDescriptorTable::SegmentDescriptor::SegmentDescriptor(u32 base, u32 limit, u8 type)
 {
   u8* target = (u8*)this;
-  if (limit <= 65536) //if 16bit limit
+  if (limit < 65536) //if 16bit limit
   {
     target[6] = 0x40; //16 bit entry
     /*For a 16bit Address Space*/
   }
   else //aka for a 32 bit Address Space
   {
-    if(limit & 0xFFF) //if the last 12 bits of the limit are not all " 1 "
+    if((limit & 0xFFF) != 0xFFF) //if the last 12 bits of the limit are not all " 1 "
     {
       limit = (limit >> 12)-1; //set the limti to the limit shifted by 12 and then subtracted by 1
     }
@@ -69,7 +69,7 @@ GlobalDescriptorTable::SegmentDescriptor::SegmentDescriptor(u32 base, u32 limit,
   target[0] = limit & 0xFF; //last 8 bits (last byte) = less significant bytes of the limit
   target[1] = (limit >> 8) & 0xFF; //Next 8 bits
   //Last 2 bytes done
-  target[6] = (limit >> 16) & 0xF;
+  target[6] |= (limit >> 16) & 0xF;
   
   /*Pointer/Base Destibution*/
   target[2] = base  & 0xFF;

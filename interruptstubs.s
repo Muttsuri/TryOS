@@ -1,10 +1,10 @@
 .set IRQ_BASE, 0x20
 
-.section .text
-	/*_ZN16 = u16 || InteruptHandler (class) || 15 (id) || HandleInterrupt (function) || Ehm (has parameters) */
-.extern _ZN16InterruptManager15HandleInterruptEhj
+.section .text # main program section
 
-# .global _ZN16InterruptHandler22IgnoreInterruptRequestEv -> declaed and called bellow, uncesessary ?
+
+	/*_ZN16 = u16 || InteruptHandler (class) || 15 (id) || HandleInterrupt (function) || Ehm (has parameters) */
+.extern _ZN16InterruptManager15HandleInterruptEhm
 
 
 /*For exeptions*/
@@ -49,21 +49,27 @@ int_bottom: # interrupt code
 	pushl %fs
 	pushl %gs
 	/*Registers Stored*/
+	
+	/*Load ring 0 segment registers*/
+	#cld
+	#mov $0x10, %eax
+	#mov %eax, %edx
+	#mov %eax, %esp
 
 
-push %esp
-push (interruptnumber)
-call _ZN16InterruptManager15HandleInterruptEhj # call function
-add %esp, 6
-# addl $5, %esp -> this would clean the stack pointer, but as the fucntion returns the stack pointer it self there is no point in doing this
-movl %eax, %esp # Instead we do this
+	push %esp
+	push (interruptnumber)
+	call _ZN16InterruptManager15HandleInterruptEhm # call function
+	add %esp, 6
+	# addl $5, %esp -> this would clean the stack pointer, but as the fucntion returns the stack pointer it self there is no point in doing this
+	movl %eax, %esp # Instead we do this
 
 
 	/*Return/Load registers from stack*/	
-	popl %gs	
-	popl %fs
-	popl %es	
-	popl %ds
+	pop %gs	
+	pop %fs
+	pop %es	
+	pop %ds
 	popa	
 	/*Registers Loded*/
 

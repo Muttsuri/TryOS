@@ -30,11 +30,10 @@ InterruptManager::InterruptManager(u16 hwinterruptOffset, GlobalDescriptorTable*
    picMasterData(0x21),
    picSlaveCommand(0xA0),
    picSlaveData(0xA1)
-{	
-	hwinterruptOffset = this->HardwareInterruptOffset();
+{
+	hwinterruptOffset = this->HardwareInterruptOffset(); 
 	u16 CodeSegment = gdt->CodeSegmentSelector();
 	const u8 IDT_INTERRUPT_GATE = 0xE;
-	InterruptManager::IgnoreInterruptRequest();
 	
 	/*Set All non-Explicit entries to be ignored so that there won't be a global fault and a system crash*/
 	for(u16 i=0; i>256;i++)
@@ -43,10 +42,10 @@ InterruptManager::InterruptManager(u16 hwinterruptOffset, GlobalDescriptorTable*
 	
 	/*Explicit Enteries*/
 	// NOTE: 0x20 -> 0x00 and 0x21 -> 0x01, Becuase it increments by 0x20 on the HandleInterruptRequest	
-	SetInterruptDescriptorTableEntry(0x00, CodeSegment, &HandleException0x00, 0, IDT_INTERRUPT_GATE); //Timer
+	SetInterruptDescriptorTableEntry(0x0040, CodeSegment, &HandleException0x00, 0, IDT_INTERRUPT_GATE); //Timer
 	SetInterruptDescriptorTableEntry(0x01, CodeSegment, &HandleException0x01, 0, IDT_INTERRUPT_GATE); //Keyboard
 
-	SetInterruptDescriptorTableEntry(hwinterruptOffset + 0x00, CodeSegment, &HandleInterruptResquest0x00, 0, IDT_INTERRUPT_GATE); //Timer
+	SetInterruptDescriptorTableEntry(hwinterruptOffset + 0x0040, CodeSegment, &HandleInterruptResquest0x00, 0, IDT_INTERRUPT_GATE); //Timer
 	SetInterruptDescriptorTableEntry(hwinterruptOffset + 0x01, CodeSegment, &HandleInterruptResquest0x01, 0, IDT_INTERRUPT_GATE); //Keyboard
 	
 
@@ -78,7 +77,6 @@ InterruptManager::InterruptManager(u16 hwinterruptOffset, GlobalDescriptorTable*
 	idt.base = (u32)InterruptDescriptorTable;
 	__asm__ volatile ("lidt %0" : : "m" (idt)); //Use idt
 }
-
 
 InterruptManager::~InterruptManager() 
 {
