@@ -8,17 +8,17 @@ GlobalDescriptorTable::GlobalDescriptorTable() //Construct a segment
 : nullSegmentSelector(0,0,0),
     unusedSegmentSelector(0,0,0),
     codeSegmentSelector(0,67108864/*64*1024*1024*/,0x9A), //Type 0x9A represents a code descriptor for the kernel
-    dataSegmentSelector(0,67108864/*64*1024*1024*/,0x92)  //
+    dataSegmentSelector(0,67108864/*64*1024*1024*/,0x92)  
   {
     /*Tell the processor to use the created table
       NOTE: The CPU expects 6 bytes in a row of information*/
     
-    u64 i[2]; //8bytes (I think it's u32 is 4 by types.h)
-    i[0] = sizeof(GlobalDescriptorTable) << 16; //Size of the Table (<< 16, shitft to the left [high bites of big endian])
-    i[1] = (u32)this; //adress of the table
+    u32 i[2]; //8bytes (I think it's u32 is 4 by types.h)
+    i[0] = (u32)this; //adress of the table
+    i[1] = sizeof(GlobalDescriptorTable) << 16; //Size of the Table (<< 16, shitft to the left [high bites of big endian])
     
     /*Assembly to tell the cpu to use the table*/
-   __asm__ volatile("lgdt (%0)": :"p"(((u8 *)i)+2)); //Load Global Descriptor Table (lgdt)
+   __asm__ volatile("lgdt (%0)": :"p" (((u8 *)i)+2)); //Load Global Descriptor Table (lgdt)
   } 
   
 GlobalDescriptorTable::~GlobalDescriptorTable()

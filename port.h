@@ -25,6 +25,19 @@ public:
   ~Port8Bit();
   virtual void Write(u8 data);
   virtual u8 Read();
+protected:
+    /*8bit IO*/
+static inline void Write8(u16 portnumber,u8 data)
+{
+  __asm__ volatile("outb %0, %1" : : "a" (data), "Nd" (portnumber));
+}
+static inline u8 Read8(u16 portnumber)
+{
+  u8 result;
+  __asm__ volatile("inb %1, %0" : "=a" (result) : "Nd" (portnumber));
+  return result;
+}
+  /*8bit IO end*/
 };
 
 
@@ -34,8 +47,15 @@ public:
   Port8BitSlow(u16 portnumber);
   ~Port8BitSlow();
   virtual void Write(u8 data);
+protected:
+  static inline void Write8Slow(u16 portnumber,u8 data)
+{
+  __asm__ volatile("outb %0, %1\njmp 1f\n1: jmp 1f\n1:" : : "a" (data), "Nd" (portnumber)); //\njmp 1f\n1: jmp 1f\n1:-> just a few jumps to slow down sligly the writing of data to the port
+}
   //inherits read from Port8Bit so no need to declare it
 };
+
+
 
 
 class Port16Bit:public Port //16bit port inherits Port
@@ -45,6 +65,19 @@ public:
   ~Port16Bit();
   virtual void Write(u16 data);
   virtual u16 Read();
+  protected:
+    /*16bit IO*/
+static inline void Write16(u16 portnumber,u16 data)
+{
+  __asm__ volatile("outb %0, %1" : : "a" (data), "Nd" (portnumber));
+}
+static inline u8 Read16(u16 portnumber)
+{
+  u16 result;
+  __asm__ volatile("inb %1, %0" : "=a" (result) : "Nd" (portnumber));
+  return result;
+}
+  /*16bit IO end*/
 };
 
 
@@ -55,6 +88,19 @@ public:
   ~Port32Bit();
   virtual void Write(u32 data);
   virtual u32 Read();
+protected:
+    /*32bit IO*/
+static inline void Write32(u16 portnumber,u32 data)
+{
+  __asm__ volatile("outb %0, %1" : : "a" (data), "Nd" (portnumber));
+}
+static inline u8 Read32(u16 portnumber)
+{
+  u32 result;
+  __asm__ volatile("inb %1, %0" : "=a" (result) : "Nd" (portnumber));
+  return result;
+}
+  /*32bit IO end*/
 };
 
 
