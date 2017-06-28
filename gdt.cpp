@@ -1,5 +1,4 @@
 #include "gdt.h" 
-#include "types.h"
 
 /*This constructs the Global Descriptor Table*/
 
@@ -7,8 +6,8 @@ GlobalDescriptorTable::GlobalDescriptorTable() //Construct a segment
 /*Initiate the Segment Selectors*/
 : nullSegmentSelector(0,0,0),
     unusedSegmentSelector(0,0,0),
-    codeSegmentSelector(0,67108864/*64*1024*1024*/,0x9A), //Type 0x9A represents a code descriptor for the kernel
-    dataSegmentSelector(0,67108864/*64*1024*1024*/,0x92)  
+    codeSegmentSelector(0,/*64*1024*1024 = */67108864,0x9A), //Type 0x9A represents a code descriptor for the kernel
+    dataSegmentSelector(0,/*64*1024*1024 = */67108864,0x92)  
   {
     /*Tell the processor to use the created table
       NOTE: The CPU expects 6 bytes in a row of information*/
@@ -106,7 +105,10 @@ u32 GlobalDescriptorTable::SegmentDescriptor::Limit()
   
   //only necessart if target[6] was set to 0xC0
   if ((target[6] & 0xC0) == 0xC0)
-  result = (result <<12) | 0xFFF;
+  {
+    result = (result <<12) | 0xFFF;
+  }
+  
   
   return result;
 }

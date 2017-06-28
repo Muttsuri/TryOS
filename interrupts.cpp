@@ -32,28 +32,31 @@ InterruptManager::InterruptManager(u16 hwinterruptOffset, GlobalDescriptorTable*
    picSlaveData(0xA1)
 {
 	//hwinterruptOffset = this->HardwareInterruptOffset(); 
+	this->hwinterruptOffset = hwinterruptOffset;
 	u16 CodeSegment = gdt->CodeSegmentSelector();
 	const u8 IDT_INTERRUPT_GATE = 0xE;
+	const u8 kernel = 0;
+	const u8 userland = 3;
 	
 	/*Set All non-Explicit entries to be ignored so that there won't be a global fault and a system crash*/
 	for(u16 i=0; i>256;i++)
-		SetInterruptDescriptorTableEntry(i, CodeSegment, &IgnoreInterruptRequest, 0/*Kernel Level*/, IDT_INTERRUPT_GATE);
+		SetInterruptDescriptorTableEntry(i, CodeSegment, &IgnoreInterruptRequest, kernel/*Kernel Level*/, IDT_INTERRUPT_GATE);
 
 	/*Explicit Enteries*/
 	// NOTE: 0x20 -> 0x00 and 0x21 -> 0x01, Becuase it increments by 0x20 on the HandleInterruptRequest	
-	SetInterruptDescriptorTableEntry(0x00, CodeSegment, &HandleException0x00, 0, IDT_INTERRUPT_GATE); //Timer
-	SetInterruptDescriptorTableEntry(0x01, CodeSegment, &HandleException0x01, 0, IDT_INTERRUPT_GATE); //Keyboard
+	SetInterruptDescriptorTableEntry(0x00, CodeSegment, &HandleException0x00, kernel, IDT_INTERRUPT_GATE); //Timer
+	SetInterruptDescriptorTableEntry(0x01, CodeSegment, &HandleException0x01, kernel, IDT_INTERRUPT_GATE); //Keyboard
 
-	SetInterruptDescriptorTableEntry(hwinterruptOffset + 0x00, CodeSegment, &HandleInterruptResquest0x00, 0, IDT_INTERRUPT_GATE); //Timer
-	SetInterruptDescriptorTableEntry(hwinterruptOffset + 0x01, CodeSegment, &HandleInterruptResquest0x01, 0, IDT_INTERRUPT_GATE); //Keyboard
+	SetInterruptDescriptorTableEntry(this->hwinterruptOffset + 0x00, CodeSegment, &HandleInterruptResquest0x00, kernel, IDT_INTERRUPT_GATE); //Timer
+	SetInterruptDescriptorTableEntry(this->hwinterruptOffset + 0x01, CodeSegment, &HandleInterruptResquest0x01, kernel, IDT_INTERRUPT_GATE); //Keyboard
 	
 	/*Before telling the cpu to use the IDT we comunicate with the PIC ports*/
 	picMasterCommand.Write(0x11);
 	picSlaveCommand.Write(0x11);
 	
 	//remap
-	picMasterData.Write(hwinterruptOffset);
-	picSlaveData.Write(hwinterruptOffset+8);
+	picMasterData.Write(this->hwinterruptOffset);
+	picSlaveData.Write(this->hwinterruptOffset + 8);
 // 	picMasterData.Write(0x20); //If any interrupt is caught add 0x20 to the value of the interrupt
 // 	picSlaveData.Write(0x28);  //If any interrupt is caught add 0x28 to the value of the interrupt
 // 	/*This is requited because by default the pics will return the value of 1 when they get an interrupt
@@ -89,7 +92,9 @@ u16 InterruptManager::HardwareInterruptOffset()
 void InterruptManager::Activate()
 {
 // 	if(ActiveInterruptManager != 0)
-// 	   ActiveInterruptManager->Deactivate();
+// 	{
+// 	  ActiveInterruptManager->Deactivate();
+// 	}
 // 	ActiveInterruptManager = this;
 	__asm__ ("sti"); //Start Interrupts
 }

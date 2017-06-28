@@ -16,11 +16,13 @@ void printf(const char* str)
 	    x=-1;
 	    
 	  default:
-	    VideoMemory[80*x+y] = (VideoMemory[80*x+y] & 0xFF00) | str[i]; /*This copies to video memory the value each character in the string
+	    VideoMemory[80*y+x] = (VideoMemory[80*y+x] & 0xFF00) | str[i]; /*This copies to video memory the value each character in the string
 									      but it also copies the high byte of the video memory so that the characters remain white
 									      this is the default of the video memory
 									      after copying the high byte it combines it with the character to make the white charctet
-									      high byte defines the colour of the character and the second defines the value to be presented.*/
+									      high byte defines the colour of the character and the second defines the value to be presented.
+									      
+									      80*y+x -> computes the memory location that the character needs to be written to.*/
 	    x++;
 	}
 	
@@ -32,11 +34,15 @@ void printf(const char* str)
 	if (y > 25) //if cursor reaches the bottom of the screen, clear screen
 	{
 	  for(y=0; y<25; y++)
+	  {
 	     for(x=0; x<80; x++)
-	       VideoMemory[80*x+y] = (VideoMemory[80*x+y] & 0xFF00) | ' ';
-	     
+	     {
+	       VideoMemory[80*y+x] = (VideoMemory[80*y+x] & 0xFF00) | ' ';
+	     }
+	  }   
 	   x=0;
 	   y=0;
+	  
 	}	  
     }
 }
@@ -47,12 +53,15 @@ void clear()
     static u8 x=0, y=0;
     
     for(y=0; y<25; y++)
+    {
 	     for(x=0; x<80; x++)
+	     {
 	       //VideoMemory[80*y+x] = (VideoMemory[80*y+x]) ;
 	       VideoMemory[80*x+y] = (VideoMemory[80*x+y] & 0xFF00) | ' ';
-	     
+	     }
 	   x=0;
 	   y=0;
+    }
 }
 
 /*
@@ -92,9 +101,8 @@ extern "C" void kernelMain(const void* multiboot_structure, u32 magicnumber) //v
 	printf("WRYYYYYYYYYYYYYYYYYYYYYYYYY!!!!!\n");
 	printf("MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA\n");
 	printf("MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA\n");
-	printf("MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA\n");
 	
 	
 	
-	while (1); //prevent kernel from stoping
+	
 }
