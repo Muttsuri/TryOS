@@ -30,7 +30,6 @@ trykernel.bin: linker.ld $(objs)
 #Exists for the purpouse of coding within a Vm an testing with the VM copy kernel to /boot/ (to test)
 install: trykernel.bin
 	sudo cp $< /boot/trykernel.bin
-	sudo nano /boot/grub/grub.cfg
 	rm -fr *.bin *.o
 #
 
@@ -43,7 +42,7 @@ TryOS.iso: trykernel.bin
 	echo 'set timeout=0' > iso/boot/grub/grub.cfg
 	echo 'set default=0' >> iso/boot/grub/grub.cfg
 	echo '' >> iso/boot/grub/grub.cfg
-	echo 'menuentry "TryOS" }' >> iso/boot/grub/grub.cfg
+	echo 'menuentry "TryOS" {' >> iso/boot/grub/grub.cfg
 	echo '	multiboot /boot/trykernel.bin ' >> iso/boot/grub/grub.cfg
 	echo '	boot' >> iso/boot/grub/grub.cfg
 	echo '}' >> iso/boot/grub/grub.cfg
