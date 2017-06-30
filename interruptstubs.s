@@ -14,7 +14,7 @@
 
 # _ZN16InterruptManager19HandleInterruptRequest\num\()Ev: # code of the fucntion
 _ZN16InterruptManager19HandleException\num\()Ev:
-	movb $\num, (interruptnumber)
+	movb $\num, (interruptNumber)
 	jmp int_bottom
 .endm
 
@@ -24,7 +24,7 @@ _ZN16InterruptManager19HandleException\num\()Ev:
 	/*_ZN16 = u16 | InterruptManager (class) | 25 (id) | HandleInterruptRequest (function) | \num\ sends number as paramenter | ()Ev (no parameters) */
 	
 _ZN16InterruptManager27HandleInterruptResquest\num\()Ev: # code of the fucntion
-	movb $\num + IRQ_BASE, (interruptnumber)
+	movb $\num + IRQ_BASE, (interruptNumber)
 	jmp int_bottom
 .endm
 /*Handler code*/
@@ -58,7 +58,7 @@ int_bottom: # interrupt code
 
 
 	push %esp
-	push (interruptnumber)
+	push (interruptNumber)
 	call _ZN16InterruptManager15HandleInterruptEhm # call function
 	add %esp, 6
 	# addl $5, %esp -> this would clean the stack pointer, but as the fucntion returns the stack pointer it self there is no point in doing this
@@ -80,6 +80,6 @@ _ZN16InterruptManager22IgnoreInterruptRequestEv:
 iret # return CPU to normal operation -> done with handeling the interrupt
 
 
-/*Initialise the variable interruptnumber as 0*/
+/*Initialise the variable interruptNumber as 0*/
 .data
-	interruptnumber: .byte 0
+	interruptNumber: .byte 0

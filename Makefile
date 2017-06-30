@@ -27,6 +27,9 @@ objs = loader.o gdt.o port.o interruptstubs.o interrupts.o kernel.o
 trykernel.bin: linker.ld $(objs)
 	ld $(LDPARAMS) -T $< -o $@ $(objs)
 
+share: TryOS.iso
+	mv $< /media/windows-share
+	
 #Exists for the purpouse of coding within a Vm an testing with the VM copy kernel to /boot/ (to test)
 install: trykernel.bin
 	sudo cp $< /boot/trykernel.bin

@@ -14,7 +14,7 @@ void printf(const char* str)
 	  case '\n': //line break
 	    y++;
 	    x=-1;
-	    
+
 	  default:
 	    VideoMemory[80*y+x] = (VideoMemory[80*y+x] & 0xFF00) | str[i]; /*This copies to video memory the value each character in the string
 									      but it also copies the high byte of the video memory so that the characters remain white
@@ -25,7 +25,7 @@ void printf(const char* str)
 									      80*y+x -> computes the memory location that the character needs to be written to.*/
 	    x++;
 	}
-	
+
 	if (x>=80) //if cursor reaches the right edge of the screen move the cursor 1 line down
 	{
 	  y++;
@@ -42,7 +42,7 @@ void printf(const char* str)
 	  }   
 	   x=0;
 	   y=0;
-	  
+  
 	}	  
     }
 }
@@ -56,8 +56,8 @@ void clear()
     {
 	     for(x=0; x<80; x++)
 	     {
-	       //VideoMemory[80*y+x] = (VideoMemory[80*y+x]) ;
-	       VideoMemory[80*x+y] = (VideoMemory[80*x+y] & 0xFF00) | ' ';
+	       VideoMemory[80*y+x] = (VideoMemory[80*y+x]) ;
+	       //VideoMemory[80*y+x] = (VideoMemory[80*y+x] & 0xFF00) | ' ';
 	     }
 	   x=0;
 	   y=0;
@@ -92,17 +92,10 @@ extern "C" void kernelMain(const void* multiboot_structure, u32 magicnumber) //v
  	GlobalDescriptorTable gdt; //Instanciate Global Descripter Table
  	printf("Testing Interrupt Declaration:\n");
 	InterruptManager interr(0x20, &gdt); //Instanciate Interrupts (This is causing errors)
-	printf("Testing Interrupt Activation:\n");
 	interr.Activate(); //Actiave Interupt Handling
 
 	//clear(); //commented for INTERRUPT testing, it will be uncomented to test clear()s
+	printf("TryOS booted\n");
 
-	printf("Kono TryOS Kenrel-da has booted\n");
-	printf("WRYYYYYYYYYYYYYYYYYYYYYYYYY!!!!!\n");
-	printf("MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA\n");
-	printf("MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA MUDA\n");
-	
-	
-	
 	
 }

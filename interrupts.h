@@ -9,7 +9,7 @@
 class InterruptManager
 {
     protected:
-      //static InterruptManager* ActiveInterruptManager;
+        static InterruptManager* ActiveInterruptManager;
       
         struct GateDescriptor
         {
@@ -50,7 +50,7 @@ class InterruptManager
 	static void HandleException0x01();
 
     	static u32 HandleInterrupt(u8 interruptNumber, u32 esp/*Current Stack Pointer*/);
-	//u32 DoHandleInterrupt(u32 interruptNumber, u32 esp/*Current Stack Pointer*/);
+	u32 DoHandleInterrupt(u32 interruptNumber, u32 esp/*Current Stack Pointer*/);
 	
 	/*Ports to comunicate with the Programable Interface Controler
 	  NOTE: There are 4 Types of PIC's but they are refered in bulk
