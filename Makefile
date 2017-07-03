@@ -13,7 +13,7 @@ ASMPARAMS = --32
 # Target architecture
 LDPARAMS = -melf_i386 
 
-objs = loader.o gdt.o port.o interruptstubs.o interrupts.o kernel.o
+objs = loader.o gdt.o port.o interruptstubs.o interrupts.o keyboard.o kernel.o
 
 # Make object file for the c++ file, compiled with g++, output for output file ($@) and input from input file ($<)
 %.o: %.cpp

@@ -1,11 +1,12 @@
 #include "types.h" //search for the file is extended from the standard comiler include bath to them plus the current source directory (if no path to another folder is pointed)
 #include "gdt.h"
 #include "interrupts.h"
+#include "keyboard.h"
 
 
 void printf(const char* str)
 {  
-    static u16* VideoMemory = (u16*)0xb8000;//video memory starts at 0xb8000
+    static u16* VideoMemory = (u16*)0xB8000;//video memory starts at 0xB8000
     static u8 x=0, y=0; //initiate x and u cursor variables NOTE: Screen is by defautl 80 characters long and 25
     
     for(int i = 0; str[i] !='\0'; i++)
@@ -17,7 +18,7 @@ void printf(const char* str)
 	    x=-1;
 
 	  default:
-	    VideoMemory[80*y+x] = (VideoMemory[80*y+x] & 0xFF00) | str[i]; /*This copies to video memory the value each character in the string
+	    VideoMemory[(80*y)+x] = (VideoMemory[(80*y)+x] & 0xFF00) | str[i]; /*This copies to video memory the value each character in the string
 									      but it also copies the high byte of the video memory so that the characters remain white
 									      this is the default of the video memory
 									      after copying the high byte it combines it with the character to make the white charctet
@@ -38,7 +39,7 @@ void printf(const char* str)
 	  {
 	     for(x=0; x<80; x++)
 	     {
-	       VideoMemory[80*y+x] = (VideoMemory[80*y+x] & 0xFF00) | ' ';
+	       VideoMemory[(80*y)+x] = (VideoMemory[(80*y)+x] & 0xFF00) | ' ';
 	     }
 	  }   
 	   x=0;
@@ -50,7 +51,7 @@ void printf(const char* str)
 
 void clear()
 {
-    static u16* VideoMemory = (u16*)0xb8000;
+    static u16* VideoMemory = (u16*)0xB8000;
     static u8 x=0, y=0;
     
     for(y=0; y<25; y++)
@@ -58,7 +59,7 @@ void clear()
 	     for(x=0; x<80; x++)
 	     {
 // 	       VideoMemory[80*y+x] = (VideoMemory[80*y+x]) ;
-	       VideoMemory[80*y+x] = (VideoMemory[80*y+x] & 0xFF00) | ' ';
+	       VideoMemory[(80*y)+x] = (VideoMemory[(80*y)+x] & 0xFF00) | ' ';
 	     }
 	   x=0;
 	   y=0;
@@ -94,9 +95,13 @@ extern "C" void kernelMain(const void* multiboot_structure, u32 magicnumber) //v
 // 	clear(); //commented for INTERRUPT testing, it will be uncomented to test clear()s
  	GlobalDescriptorTable gdt; //Instanciate Global Descripter Table
  	printf("Testing Interrupt Declaration:\n");
-	InterruptManager interr(0x20, &gdt); //Instanciate Interrupts
+	InterruptManager interr(0x40, &gdt); //Instanciate Interrupts
+	
+	KeyboardDriver Keyb(&interr); //This keyboard object need to be instanciated before the activation of the interrupts
+	
 	interr.Activate(); //Actiave Interupt Handling
 
 	printf("TryOS Kernel has Booted\n");
-	//while(1){}; //This was causing the OS to crash systematicly
+//  	while(1); //This was causing the OS to crash systematicly
+	
 }
