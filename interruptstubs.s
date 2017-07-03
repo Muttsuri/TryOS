@@ -11,10 +11,9 @@
 .macro HandleException num
 .global	_ZN16InterruptManager19HandleException\num\()Ev
 	/*_ZN16 = u16 | InterruptManager (class) | 16 (id) | HandleInterruptRequest (function) | \num\ sends number as paramenter | ()Ev (no parameters) */
-
 # _ZN16InterruptManager19HandleInterruptRequest\num\()Ev: # code of the fucntion
 _ZN16InterruptManager19HandleException\num\()Ev:
-	movb $\num, (interruptNumber)
+	movb $\num , (interruptNumber)
 	jmp int_bottom
 .endm
 
@@ -24,7 +23,7 @@ _ZN16InterruptManager19HandleException\num\()Ev:
 	/*_ZN16 = u16 | InterruptManager (class) | 25 (id) | HandleInterruptRequest (function) | \num\ sends number as paramenter | ()Ev (no parameters) */
 	
 _ZN16InterruptManager27HandleInterruptResquest\num\()Ev: # code of the fucntion
-	movb $\num + IRQ_BASE, (interruptNumber)
+	movb $\num + IRQ_BASE , (interruptNumber)
 	jmp int_bottom
 .endm
 /*Handler code*/
@@ -51,10 +50,10 @@ int_bottom: # interrupt code
 	/*Registers Stored*/
 	
 	/*Load ring 0 segment registers*/
-	#cld
-	#mov $0x10, %eax
-	#mov %eax, %edx
-	#mov %eax, %esp
+	cld
+	mov $0x10, %eax
+	mov %eax, %edx
+	mov %eax, %esp
 
 
 	push %esp

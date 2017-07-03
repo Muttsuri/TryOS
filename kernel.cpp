@@ -2,6 +2,7 @@
 #include "gdt.h"
 #include "interrupts.h"
 
+
 void printf(const char* str)
 {  
     static u16* VideoMemory = (u16*)0xb8000;//video memory starts at 0xb8000
@@ -56,8 +57,8 @@ void clear()
     {
 	     for(x=0; x<80; x++)
 	     {
-	       VideoMemory[80*y+x] = (VideoMemory[80*y+x]) ;
-	       //VideoMemory[80*y+x] = (VideoMemory[80*y+x] & 0xFF00) | ' ';
+// 	       VideoMemory[80*y+x] = (VideoMemory[80*y+x]) ;
+	       VideoMemory[80*y+x] = (VideoMemory[80*y+x] & 0xFF00) | ' ';
 	     }
 	   x=0;
 	   y=0;
@@ -89,13 +90,13 @@ extern "C" void CallConstructors()
 //extern "C" -> avoid C++ alternative naming conventions, use C naming conventions
 extern "C" void kernelMain(const void* multiboot_structure, u32 magicnumber) //void pointer to accept the multiboot data passed from loader, also accepts the magic number
 {
+	CallConstructors();
+// 	clear(); //commented for INTERRUPT testing, it will be uncomented to test clear()s
  	GlobalDescriptorTable gdt; //Instanciate Global Descripter Table
  	printf("Testing Interrupt Declaration:\n");
-	InterruptManager interr(0x20, &gdt); //Instanciate Interrupts (This is causing errors)
+	InterruptManager interr(0x20, &gdt); //Instanciate Interrupts
 	interr.Activate(); //Actiave Interupt Handling
 
-	//clear(); //commented for INTERRUPT testing, it will be uncomented to test clear()s
-	printf("TryOS booted\n");
-
-	
+	printf("TryOS Kernel has Booted\n");
+	while(1){}; //This was causing the OS to crash systematicly
 }

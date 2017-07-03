@@ -60,8 +60,7 @@ loader:
     # Global Constructors (C++)
     # Exeptions
   # It is also where the GDT (Global Descriptor Table) should be loaded [low level memory management]*/
-
-   call CallConstructors #Global constructor call
+   call CallConstructors #Global constructor call	
 
 # processor state area end
 

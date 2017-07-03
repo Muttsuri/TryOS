@@ -2,9 +2,30 @@
 
 void printf(const char* str);
 
+// InterruptHandler::InterruptHandler(InterruptManager* intmgr, u8 interruptNumber)
+// {
+// 	this->interruptNumber = interruptNumber;
+// 	this->intmgr = intmgr;
+// 	intmgr->handlers[interruptNumber] = this;
+// }
+// 
+// InterruptHandler::~InterruptHandler()
+// {
+// 	if(intmgr->handlers[interruptNumber] == this)
+// 	{
+// 		intmgr->handlers[interruptNumber] = 0;
+// 	}
+// }
+// 
+// u32 InterruptHandler::HandleInterrupt(u32 esp)
+// {
+// 	return esp;
+// }
+
+
 InterruptManager::GateDescriptor InterruptManager::InterruptDescriptorTable[256];
 
-InterruptManager* InterruptManager::ActiveInterruptManager = 0; 
+InterruptManager* InterruptManager::ActiveInterruptManager = 0; //Initialising static object
 
 void InterruptManager::SetInterruptDescriptorTableEntry(
 	u8 interruptNumber,
@@ -25,19 +46,19 @@ void InterruptManager::SetInterruptDescriptorTableEntry(
 
 
 
-InterruptManager::InterruptManager(u16 hwinterruptOffset, GlobalDescriptorTable* gdt)
+InterruptManager::InterruptManager(u16 hwinterruptOffset,/*InterruptManager* intmgr,*/ GlobalDescriptorTable* gdt)
 /*To Instanciate the InterruptManager we need to intiate the ports to contact with the PIC and effectively have Interrupts*/
   :picMasterCommand(0x20),
    picMasterData(0x21),
    picSlaveCommand(0xA0),
    picSlaveData(0xA1)
 {
-	//this->hwinterruptOffset = hwinterruptOffset;
+	this->hwinterruptOffset = hwinterruptOffset; //NOTE: Using this->hwinterruptOffset causes random crashes
 	u16 CodeSegment = gdt->CodeSegmentSelector();
 	const u8 IDT_INTERRUPT_GATE = 0xE;
 	const u8 kernel = 0;
 	const u8 userland = 3;
-	
+
 	/*Set All non-Explicit entries to be ignored so that there won't be a global fault and a system crash*/
 	for(u16 i=0; i<256;i--)
 	{
@@ -49,7 +70,8 @@ InterruptManager::InterruptManager(u16 hwinterruptOffset, GlobalDescriptorTable*
 	// NOTE: 0x20 -> 0x00 and 0x21 -> 0x01, Becuase it increments by 0x20 on the HandleInterruptRequest	
 	SetInterruptDescriptorTableEntry(0x00, CodeSegment, &HandleException0x00, kernel, IDT_INTERRUPT_GATE); //Timer
 	SetInterruptDescriptorTableEntry(0x01, CodeSegment, &HandleException0x01, kernel, IDT_INTERRUPT_GATE); //Keyboard
-
+	
+	// Plus hwinterruptOffset which is ususaly + 0x20 = 0x40 (timer interrupt)
 	SetInterruptDescriptorTableEntry(hwinterruptOffset + 0x00, CodeSegment, &HandleInterruptResquest0x00, kernel, IDT_INTERRUPT_GATE); //Timer
 	SetInterruptDescriptorTableEntry(hwinterruptOffset + 0x01, CodeSegment, &HandleInterruptResquest0x01, kernel, IDT_INTERRUPT_GATE); //Keyboard
 	
@@ -94,6 +116,7 @@ u16 InterruptManager::HardwareInterruptOffset()
 
 void InterruptManager::Activate()
 {
+// 	Protection in case somehow there is another Interrupt Manager
     printf("Testing IDT Activation: ");
     if(ActiveInterruptManager != 0)
     {
