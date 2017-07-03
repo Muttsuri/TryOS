@@ -98,5 +98,5 @@ extern "C" void kernelMain(const void* multiboot_structure, u32 magicnumber) //v
 	interr.Activate(); //Actiave Interupt Handling
 
 	printf("TryOS Kernel has Booted\n");
-	while(1){}; //This was causing the OS to crash systematicly
+	//while(1){}; //This was causing the OS to crash systematicly
 }
