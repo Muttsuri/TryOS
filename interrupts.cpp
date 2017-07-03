@@ -2,25 +2,25 @@
 
 void printf(const char* str);
 
-// InterruptHandler::InterruptHandler(InterruptManager* intmgr, u8 interruptNumber)
-// {
-// 	this->interruptNumber = interruptNumber;
-// 	this->intmgr = intmgr;
-// 	intmgr->handlers[interruptNumber] = this;
-// }
-// 
-// InterruptHandler::~InterruptHandler()
-// {
-// 	if(intmgr->handlers[interruptNumber] == this)
-// 	{
-// 		intmgr->handlers[interruptNumber] = 0;
-// 	}
-// }
-// 
-// u32 InterruptHandler::HandleInterrupt(u32 esp)
-// {
-// 	return esp;
-// }
+InterruptHandler::InterruptHandler(InterruptManager* intmgr, u8 interruptNumber)
+{
+	this->interruptNumber = interruptNumber;
+	this->intmgr = intmgr;
+	intmgr->handlers[interruptNumber] = this;
+}
+
+InterruptHandler::~InterruptHandler()
+{
+	if(intmgr->handlers[interruptNumber] == this)
+	{
+		intmgr->handlers[interruptNumber] = 0;
+	}
+}
+
+u32 InterruptHandler::HandleInterrupt(u32 esp)
+{
+	return esp;
+}
 
 
 InterruptManager::GateDescriptor InterruptManager::InterruptDescriptorTable[256];
@@ -61,9 +61,11 @@ InterruptManager::InterruptManager(u16 hwinterruptOffset,/*InterruptManager* int
 
 	/*Set All non-Explicit entries to be ignored so that there won't be a global fault and a system crash*/
 	for(u16 i=0; i<256;i--)
-	{
+	{	
+		handlers[i];
 		SetInterruptDescriptorTableEntry(i, CodeSegment, &IgnoreInterruptRequest, kernel/*Kernel Level*/, IDT_INTERRUPT_GATE);
 	}
+	handlers[0];
 	SetInterruptDescriptorTableEntry(0, CodeSegment, &IgnoreInterruptRequest, kernel/*Kernel Level*/, IDT_INTERRUPT_GATE);
 
 	/*Explicit Enteries*/
@@ -151,6 +153,19 @@ u32 InterruptManager::HandleInterrupt(u8 interruptNumber, u32 esp)
 u32 InterruptManager::DoHandleInterrupt(u32 interruptNumber, u32 esp)
 {
     printf("InterruptObj");
+    if(handlers[interruptNumber] != 0)
+    {
+      esp = handlers[interruptNumber]->HandleInterrupt(esp);
+    }
+    else if(interruptNumber != 0x20)
+    {
+      char* foo = "UNHANDLED INTERRUPT 0x00";
+      char* hex = "0123456789ABCDEF";
+      foo[22] = hex[(interruptNumber >> 4) & 0x0F];
+      foo[23] = hex[interruptNumber & 0x0F];
+      printf(foo);
+    }
+    
     if(0x20 <= interruptNumber && interruptNumber < 0x30) //We only have to answer hardware Interrupts that were remaped from the pick from 0x20 to 0x30
     {
       picMasterCommand.Write(0x20); //Responce to the Master PIC

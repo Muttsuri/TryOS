@@ -6,28 +6,31 @@
   #include "port.h"
   #include "gdt.h"
 
-// class InterruptManager;
-// class InterruptHandler
-// {
-//     protected:
-//         static InterruptManager* ActiveInterruptManager;
-// 
-// 	u8 interruptNumber;
-// 	InterruptManager* intmgr;
-// 	InterruptHandler(InterruptManager* intmgr, u8 interruptNumber);
-// 	~InterruptHandler();
-// public:
-// 	virtual u32 HandleInterrupt(u32 esp);
-// };
+class InterruptManager;
+class InterruptHandler
+{
+    protected:
+	    
+        static InterruptManager* ActiveInterruptManager;
+	u8 interruptNumber;
+	InterruptManager* intmgr;
+	InterruptHandler(InterruptManager* intmgr, u8 interruptNumber);
+	~InterruptHandler();
+    public:
+	virtual u32 HandleInterrupt(u32 esp);
+};
 
 class InterruptManager
 {
-// 	friend class InterruptHandler;
+	friend class InterruptHandler;
 protected:
 	static InterruptManager* ActiveInterruptManager; //To allow just one Interrupt Manager at any one time
 	/*Theoreticly there could be more than one Manager however because the Sytem/CPU only has 1 IDT
 	  As such it only makes sence to have one Interrupt Manager*/
-// 	InterruptHandler* handlers[256];
+	
+	/*IDT but at a higher level*/
+	InterruptHandler* handlers[256];
+	
         struct GateDescriptor
         {
 	    /*Address of the handler is split*/
