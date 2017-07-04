@@ -32,5 +32,4 @@ Paginas da [OSDev.org](http://wiki.osdev.org/Main_Page) (Uma wiki com informaç�
 * Recognes keyboard and interrupts.
 
 ### Demonstração
-[img]: https://github.com/Muttsuri/TryOS/not-code/TryOS-Showoff
-![](img)
+![img](https://github.com/Muttsuri/TryOS/blob/master/not-code/TryOS-Showoff.png)
