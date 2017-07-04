@@ -1,10 +1,9 @@
 #ifndef _KEYBOARD_H
 #define _KEYBOARD_H
 
-#include "types.h"
-#include "interrupts.h"
-#include "port.h"
-#include "keyboard.h"
+#include "../../../types.h"
+#include "../../IDT/interrupts.h"
+#include "../../port.h"
 
 class KeyboardDriver : public InterruptHandler
 {

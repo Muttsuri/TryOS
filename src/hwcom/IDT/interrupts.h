@@ -2,9 +2,9 @@
 #ifndef __INTERRUPTMANAGER_H
 #define __INTERRUPTMANAGER_H
 
-  #include "types.h"
-  #include "port.h"
-  #include "gdt.h"
+  #include "../../types.h"
+  #include "../port.h"
+  #include "../../GDT/gdt.h"
 
 class InterruptManager;
 class InterruptHandler

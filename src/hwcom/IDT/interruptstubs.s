@@ -50,10 +50,10 @@ int_bottom: # interrupt code
 	/*Registers Stored*/
 	
 	/*Load ring 0 segment registers*/
-	cld
-	mov $0x10, %eax
-	mov %eax, %edx
-	mov %eax, %esp
+	# cld
+	# mov $0x10, %eax
+	# mov %eax, %edx
+	# mov %eax, %esp
 
 
 	push %esp
@@ -65,10 +65,10 @@ int_bottom: # interrupt code
 
 
 	/*Return/Load registers from stack*/	
-	pop %gs	
-	pop %fs
-	pop %es	
-	pop %ds
+	popl %gs	
+	popl %fs
+	popl %es	
+	popl %ds
 	popa	
 	/*Registers Loded*/
 

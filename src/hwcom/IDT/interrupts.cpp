@@ -152,7 +152,7 @@ u32 InterruptManager::HandleInterrupt(u8 interruptNumber, u32 esp)
 
 u32 InterruptManager::DoHandleInterrupt(u32 interruptNumber, u32 esp)
 {
-    printf("InterruptObj");
+//     printf("InterruptObj ");
     if(handlers[interruptNumber] != 0)
     {
       esp = handlers[interruptNumber]->HandleInterrupt(esp);
@@ -166,12 +166,12 @@ u32 InterruptManager::DoHandleInterrupt(u32 interruptNumber, u32 esp)
       printf(foo);
     }
     
-    if(0x20 <= interruptNumber && interruptNumber < 0x30) //We only have to answer hardware Interrupts that were remaped from the pick from 0x20 to 0x30
+    if(0x20 <= interruptNumber && interruptNumber < 0x30) 	//We only have to answer hardware Interrupts that were remaped from the pick from 0x20 to 0x30
     {
-      picMasterCommand.Write(0x20); //Responce to the Master PIC
+      picMasterCommand.Write(0x20); 				//Responce to the Master PIC
       if(0x28 <=interruptNumber)
       {
-	picSlaveCommand.Write(0x20);  //Answer the slave if the interrupt did came from the slave
+	picSlaveCommand.Write(0x20);  				//Answer the slave if the interrupt did came from the slave
       }
     }
     return esp;

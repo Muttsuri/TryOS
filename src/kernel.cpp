@@ -1,8 +1,7 @@
 #include "types.h" //search for the file is extended from the standard comiler include bath to them plus the current source directory (if no path to another folder is pointed)
-#include "gdt.h"
-#include "interrupts.h"
-#include "keyboard.h"
-
+#include "GDT/gdt.h"
+#include "hwcom/IDT/interrupts.h"
+#include "hwcom/drivers/keyboard/keyboard.h"
 
 void printf(const char* str)
 {  
@@ -15,7 +14,12 @@ void printf(const char* str)
 	{
 	  case '\n': //line break
 	    y++;
-	    x=-1;
+	    x=0;
+
+	  case '\b': //backspace
+	    x--;
+	    printf(" ");
+	    x--;
 
 	  default:
 	    VideoMemory[(80*y)+x] = (VideoMemory[(80*y)+x] & 0xFF00) | str[i]; /*This copies to video memory the value each character in the string
@@ -33,7 +37,7 @@ void printf(const char* str)
 	  y++;
 	  x=0;
 	}
-	if (y > 25) //if cursor reaches the bottom of the screen, clear screen
+	if (y >= 25) //if cursor reaches the bottom of the screen, clear screen
 	{
 	  for(y=0; y<25; y++)
 	  {
@@ -44,7 +48,6 @@ void printf(const char* str)
 	  }   
 	   x=0;
 	   y=0;
-  
 	}	  
     }
 }
@@ -84,14 +87,15 @@ extern "C" constructor end_ctors;  //pointer to end_ctors data constructor
 extern "C" void CallConstructors() 
 {
     for(constructor* i = &start_ctors; i != &end_ctors; i++)
+    {
      (*i)(); 
+    }
 }
 /*Constructor for global objects*/
 
 //extern "C" -> avoid C++ alternative naming conventions, use C naming conventions
 extern "C" void kernelMain(const void* multiboot_structure, u32 magicnumber) //void pointer to accept the multiboot data passed from loader, also accepts the magic number
 {
-	CallConstructors();
 // 	clear(); //commented for INTERRUPT testing, it will be uncomented to test clear()s
  	GlobalDescriptorTable gdt; //Instanciate Global Descripter Table
  	printf("Testing Interrupt Declaration:\n");
@@ -100,8 +104,8 @@ extern "C" void kernelMain(const void* multiboot_structure, u32 magicnumber) //v
 	KeyboardDriver Keyb(&interr); //This keyboard object need to be instanciated before the activation of the interrupts
 	
 	interr.Activate(); //Actiave Interupt Handling
-
+  
 	printf("TryOS Kernel has Booted\n");
-//  	while(1); //This was causing the OS to crash systematicly
+ 	while(1); 
 	
 }

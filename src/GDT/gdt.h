@@ -2,7 +2,7 @@
 #ifndef __GDT_H //if the code hasn't been instansiated
 #define __GDT_H //instansiate it
 
-#include "types.h" //type defenition inclusion
+#include "../types.h" //type defenition inclusion
 
 /*Class that defines the enteries of the Global Descriptor Table*/
 

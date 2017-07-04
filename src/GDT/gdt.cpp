@@ -1,5 +1,7 @@
 #include "gdt.h" 
 
+void printf (const char* str);
+
 /*This constructs the Global Descriptor Table*/
 
 GlobalDescriptorTable::GlobalDescriptorTable() //Construct a segment
@@ -12,12 +14,15 @@ GlobalDescriptorTable::GlobalDescriptorTable() //Construct a segment
     /*Tell the processor to use the created table
       NOTE: The CPU expects 6 bytes in a row of information*/
     
+    //These were reverced causing a crash with the introduction of interrupts
     u32 i[2]; //8bytes (I think it's u32 is 4 by types.h)
-    i[0] = (u32)this; //adress of the table
-    i[1] = sizeof(GlobalDescriptorTable) << 16; //Size of the Table (<< 16, shitft to the left [high bites of big endian])
+    i[0] = sizeof(GlobalDescriptorTable) << 16; //Size of the Table (<< 16, shitft to the left [high bites of big endian])
+    i[1] = (u32)this; //adress of the table
     
+    printf("Starting GDT: ");
     /*Assembly to tell the cpu to use the table*/
    __asm__ volatile("lgdt (%0)": :"p" (((u8 *)i)+2)); //Load Global Descriptor Table (lgdt)
+    printf("GDT Started\n");
   } 
   
 GlobalDescriptorTable::~GlobalDescriptorTable()

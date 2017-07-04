@@ -70,11 +70,10 @@ loader:
     call kernelMain 	# calls the kernel itself
 
 
-
-_stop:		#if somehow the kernel stops  
-    cli		# Disable Interups
-    hlt		# Wait for Interups but as they are disabled nothing will happen
-    jmp _stop 	# if somehow an interupt happens repeat this loop
+ _stop:		#if somehow the kernel stops  
+   cli		# Disable Interups
+   hlt		# Wait for Interups but as they are disabled nothing will happen
+   jmp _stop 	# if somehow an interupt happens repeat this loop
 
 
 /* .size loader, . - loader # Set size of loader symbol to: current location ( . ) minus it's start */

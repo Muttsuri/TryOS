@@ -13,14 +13,16 @@ ASMPARAMS = --32
 # Target architecture
 LDPARAMS = -melf_i386 
 
-objs = loader.o gdt.o port.o interruptstubs.o interrupts.o keyboard.o kernel.o
+objs = obj/loader.o obj/GDT/gdt.o obj/hwcom/port.o obj/hwcom/IDT/interruptstubs.o obj/hwcom/IDT/interrupts.o obj/hwcom/drivers/keyboard/keyboard.o obj/kernel.o
 
 # Make object file for the c++ file, compiled with g++, output for output file ($@) and input from input file ($<)
-%.o: %.cpp
+obj/%.o: src/%.cpp
+	mkdir -p $(@D)
 	g++ $(CPPPARAMS) -o $@ -c $<
 
 # Make object file from the assemby file, "compiled" with as, output for output file ($@) and input from input file ($<)
-%.o: %.s
+obj/%.o: src/%.s
+	mkdir -p $(@D)
 	as $(ASMPARAMS) -o $@  $<
 
 # links the objects $< (input) = linker.ld,  $@ target
@@ -29,11 +31,12 @@ trykernel.bin: linker.ld $(objs)
 
 share: TryOS.iso
 	mv $< /media/windows-share
+	make clean
 	
-#Exists for the purpouse of coding within a Vm an testing with the VM copy kernel to /boot/ (to test)
-install: trykernel.bin
-	sudo cp $< /boot/trykernel.bin
-	rm -fr *.bin *.o
+# #Exists for the purpouse of coding within a Vm an testing with the VM copy kernel to /boot/ (to test)
+# install: trykernel.bin
+# 	sudo cp $< /boot/trykernel.bin
+# 	rm -fr *.bin *.o
 #
 
 # Create a bootable ISO image.
@@ -50,5 +53,9 @@ TryOS.iso: trykernel.bin
 	echo '	boot' >> iso/boot/grub/grub.cfg
 	echo '}' >> iso/boot/grub/grub.cfg
 	grub-mkrescue --output=$@ iso
-	rm -fr iso *.bin *.o
+	rm -rf obj trykernel.bin 
 
+#Sometimes it might be required to clean everything and recompile for it to work well
+.PHONY: clean
+clean:
+	rm -rf $(objs) trykernel.bin iso/ TryOS.iso
