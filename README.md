@@ -1,4 +1,4 @@
-# Projeto de Aptidão Proficional ( PAP )
+# Projeto de Aptidão Profissional ( PAP )
 
 ### Nome de projeto:
 * **Programação e arquitetura de sistemas operativos.**
